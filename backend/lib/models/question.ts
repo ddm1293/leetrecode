@@ -39,7 +39,4 @@ export class Question extends Item {
     get sk(): string {
         throw new Error('Method not implemented.');
     }
-    toItem(): Record<any, unknown> {
-        throw new Error('Method not implemented.');
-    }
 }

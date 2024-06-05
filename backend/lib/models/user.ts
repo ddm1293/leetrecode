@@ -1,7 +1,9 @@
 import { Item } from './common/item';
+import { IsEmail } from 'class-validator';
 
 export class User extends Item {
     public userId: string;
+    @IsEmail()
     public email: string;
     public password: string;
 
@@ -13,12 +15,9 @@ export class User extends Item {
     }
 
     get pk(): string {
-        throw new Error('Method not implemented.');
+        return `USER#${this.userId}`;
     }
     get sk(): string {
-        throw new Error('Method not implemented.');
-    }
-    toItem(): Record<any, unknown> {
-        throw new Error('Method not implemented.');
+        return `USER#METADATA`;
     }
 }

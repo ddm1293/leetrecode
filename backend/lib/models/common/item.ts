@@ -5,6 +5,8 @@ import {
     PutCommand,
     UpdateCommand,
 } from '@aws-sdk/lib-dynamodb';
+import { instanceToPlain, plainToInstance } from 'class-transformer';
+import { validateOrReject } from 'class-validator';
 
 export abstract class Item {
     abstract get pk(): string;
@@ -18,7 +20,15 @@ export abstract class Item {
         };
     }
 
-    abstract toItem(): Record<any, unknown>;
+    public toItem(): Record<string, any> {
+        return instanceToPlain(this)
+    }
+
+    public static async fromItem<T extends Item>(this: new () => T, item: Record<string, unknown>): Promise<Item> {
+        const instance: T = plainToInstance(this, item);
+        await validateOrReject(instance)
+        return instance;
+    }
 
     public async save(tableName: string): Promise<void> {
         const client = DynamoDBClientManager.getClient();
