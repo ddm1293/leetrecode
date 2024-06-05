@@ -7,8 +7,12 @@ export class Tag extends Item {
     public description: string;
     public questions: Array<string>;
 
-
-    constructor(tagId: string, name: string, slug: string, description?: string) {
+    constructor(
+        tagId: string,
+        name: string,
+        slug: string,
+        description?: string,
+    ) {
         super();
         this.tagId = tagId;
         this.name = name;

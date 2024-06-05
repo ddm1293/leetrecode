@@ -4,8 +4,8 @@ import eslintConfigPrettier from 'eslint-config-prettier';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 
 export default tseslint.config(
-  eslint.configs.recommended,
-  ...tseslint.configs.recommended,
-  eslintConfigPrettier,
-  eslintPluginPrettierRecommended,
+    eslint.configs.recommended,
+    ...tseslint.configs.recommended,
+    eslintConfigPrettier,
+    eslintPluginPrettierRecommended,
 );

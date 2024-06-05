@@ -6,10 +6,10 @@ export class List extends Item {
     public questions: Array<string>;
 
     constructor(listId: string, listName: string, questions: Array<string>) {
-      super();
-      this.listId = listId;
-      this.listName = listName;
-      this.questions = questions;
+        super();
+        this.listId = listId;
+        this.listName = listName;
+        this.questions = questions;
     }
 
     get pk(): string {
@@ -21,5 +21,4 @@ export class List extends Item {
     toItem(): Record<any, unknown> {
         throw new Error('Method not implemented.');
     }
-
 }

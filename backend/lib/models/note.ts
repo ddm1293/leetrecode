@@ -8,13 +8,14 @@ export class Note extends Item {
     public updatedAt: Date;
     public noteType: string;
 
-
-    constructor(noteId: string,
-                content: string,
-                createdAt: Date,
-                updatedAt: Date,
-                noteType: string,
-                title?: string) {
+    constructor(
+        noteId: string,
+        content: string,
+        createdAt: Date,
+        updatedAt: Date,
+        noteType: string,
+        title?: string,
+    ) {
         super();
         this.noteId = noteId;
         this.title = title || '';
@@ -33,5 +34,4 @@ export class Note extends Item {
     toItem(): Record<any, unknown> {
         throw new Error('Method not implemented.');
     }
-
 }

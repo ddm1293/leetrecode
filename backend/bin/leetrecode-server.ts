@@ -8,8 +8,8 @@ dotenv.config();
 
 const app = new cdk.App();
 new LeetrecodeServerStack(app, 'LeetrecodeServerStack', {
-  env: {
-    account: process.env.CDK_DEFAULT_ACCOUNT,
-    region: process.env.CDK_DEFAULT_REGION,
-  },
+    env: {
+        account: process.env.CDK_DEFAULT_ACCOUNT,
+        region: process.env.CDK_DEFAULT_REGION,
+    },
 });
