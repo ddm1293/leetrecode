@@ -1,9 +1,9 @@
 {
-  "name": "backend",
+  "name": "leetrecode-server",
   "version": "0.1.0",
   "type": "module",
   "bin": {
-    "backend": "bin/backend.js"
+    "backend": "bin/leetrecode-server.js"
   },
   "scripts": {
     "build": "tsc",
@@ -30,9 +30,12 @@
     "typescript-eslint": "^7.11.0"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.590.0",
+    "@aws-sdk/lib-dynamodb": "^3.590.0",
     "aws-cdk-lib": "2.144.0",
     "constructs": "^10.0.0",
     "dotenv": "^16.4.5",
+    "lodash": "^4.17.21",
     "source-map-support": "^0.5.21"
   }
 }

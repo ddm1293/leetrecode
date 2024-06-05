@@ -1,6 +1,7 @@
 *.js
 !eslint.config.js
 !jest.config.js
+!lib/*.js
 *.d.ts
 node_modules
 .env
