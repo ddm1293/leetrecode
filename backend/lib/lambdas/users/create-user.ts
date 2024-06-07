@@ -22,10 +22,9 @@ export class LambdaHandler implements LambdaInterface {
                 { message: "Request body is required and must be a valid JSON object" });
         }
 
-        console.log("see event request body type", typeof requestBody);
-        console.log("see event:", event);
-
         const user = await User.fromItem(requestBody as Record<string, unknown>);
+
+        await user.save("userTable")
 
         const response = {
             message: "User created successfully",

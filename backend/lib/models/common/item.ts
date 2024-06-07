@@ -63,7 +63,7 @@ export abstract class Item {
     ): Promise<void> {
         const client = DynamoDBClientManager.getClient();
         const key = sk ? { PK: pk, SK: sk } : { PK: pk };
-        const item = await client.send(
+        await client.send(
             new DeleteCommand({
                 TableName: tableName,
                 Key: key,
