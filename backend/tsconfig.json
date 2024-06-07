@@ -23,10 +23,15 @@
         "sourceMap": false,
         "moduleResolution": "node",
         "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
         "outDir": "./dist",
-        "typeRoots": ["./node_modules/@types"]
+        "typeRoots": ["./node_modules/@types"],
+        "incremental": true,
+        "composite": true,
+        "resolveJsonModule": true,
+        "allowJs": true,
     },
     "exclude": ["node_modules", "cdk.out"]
 }
