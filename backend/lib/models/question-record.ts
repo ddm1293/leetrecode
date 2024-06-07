@@ -5,7 +5,7 @@ import { User } from './user';
 
 export class QuestionRecord extends Item {
     public recordId: string;
-    public ownerId: string;
+    public userId: string;
     public questionId: string;
     public latestSubmissionId: string;
     public lastReviewDate: Date;
@@ -31,7 +31,7 @@ export class QuestionRecord extends Item {
     ) {
         super();
         this.recordId = recordId;
-        this.ownerId = ownerId;
+        this.userId = ownerId;
         this.questionId = questionId;
         this.latestSubmissionId = latestSubmissionId;
         this.lastReviewDate = lastReviewDate;
@@ -44,9 +44,9 @@ export class QuestionRecord extends Item {
     }
 
     get pk(): string {
-        throw new Error('Method not implemented.');
+        return `USER#${this.userId}`;
     }
     get sk(): string {
-        throw new Error('Method not implemented.');
+        return `RECORD#${this.questionId}`;
     }
 }

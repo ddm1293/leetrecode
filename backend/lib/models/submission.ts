@@ -32,9 +32,9 @@ export class Submission extends Item {
     }
 
     get pk(): string {
-        throw new Error('Method not implemented.');
+        return `USER#${this.userId}#RECORD#${this.questionId}#SUBMISSION`;
     }
     get sk(): string {
-        throw new Error('Method not implemented.');
+        return `SUBMISSION#${this.submissionId}`;
     }
 }
