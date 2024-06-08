@@ -2,11 +2,12 @@ import { Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { ITable } from 'aws-cdk-lib/aws-dynamodb';
 import { RestApi } from 'aws-cdk-lib/aws-apigateway';
-import { LambdaFactory } from '../factories/lambda-factory';
-import { UserLambdaFactory } from '../factories/user-lambda-factory';
+import { UserApiStack } from './sub-api-stacks/user-api-stack';
+import { SubmissionApiStack } from './sub-api-stacks/submission-api-stack';
+import { RecordApiStack } from './sub-api-stacks/record-api-stack';
 
 interface ApiStackProps extends StackProps {
-    table: ITable;
+    tables: Record<string, ITable>
 }
 
 export class ApiStack extends Stack {
@@ -14,20 +15,25 @@ export class ApiStack extends Stack {
         super(scope, id, props);
 
         // TODO: understand RestApi construct
-        const api = new RestApi(this, 'MyApi', {
+        const restApi: RestApi = new RestApi(this, 'MyApi', {
             restApiName: 'Leetrecode api gateway',
             description: 'This service serves my API.',
         });
 
-        this.configureFactory(new UserLambdaFactory(), api, props.table);
+        const userStack = new UserApiStack(this, "userApiStack", {
+            api: restApi,
+            table: props.tables["userTable"]
+        })
+
+        const submissionStack = new SubmissionApiStack(this, "submissionApiStack", {
+            api: restApi,
+            table: props.tables["userTable"]
+        })
+
+        const recordStack = new RecordApiStack(this, "recordApiStack", {
+            api: restApi,
+            table: props.tables["userTable"]
+        })
     }
 
-    private configureFactory(
-        factory: LambdaFactory,
-        api: RestApi,
-        table: ITable,
-    ) {
-        const lambdas = factory.createLambdas(this, table);
-        factory.addRoutes(api, lambdas);
-    }
 }
