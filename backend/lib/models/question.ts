@@ -1,6 +1,6 @@
-import { Item } from './common/item';
-import { Tag } from './tag';
-import { Difficulty } from './common/difficulty';
+import { Item } from './common/item.js';
+import { Tag } from './tag.js';
+import { Difficulty } from './common/difficulty.js';
 
 export class Question extends Item {
     public questionId: string;
@@ -10,7 +10,7 @@ export class Question extends Item {
     public translatedTitle: string;
     public translatedContent: string;
     public difficulty: Difficulty;
-    public topicTags: Array<Tag>;
+    public topicTags: Tag[];
 
     constructor(
         questionId: string,
@@ -18,7 +18,7 @@ export class Question extends Item {
         titleSlug: string,
         content: string,
         difficulty: string,
-        topicTags: Array<Tag>,
+        topicTags: Tag[],
         translatedTitle?: string,
         translatedContent?: string,
     ) {

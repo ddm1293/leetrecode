@@ -3,14 +3,15 @@ import {
     APIGatewayProxyEventHeaders,
     APIGatewayProxyEventQueryStringParameters,
     APIGatewayProxyEventPathParameters,
-    APIGatewayProxyEventStageVariables } from 'aws-lambda';
+    APIGatewayProxyEventStageVariables,
+} from 'aws-lambda';
 
 export function createMockEvent(
     body: Record<string, unknown> | null,
     headers?: APIGatewayProxyEventHeaders,
     queryStringParameters?: APIGatewayProxyEventQueryStringParameters,
     pathParameters?: APIGatewayProxyEventPathParameters,
-    stageVariables?: APIGatewayProxyEventStageVariables
+    stageVariables?: APIGatewayProxyEventStageVariables,
 ): APIGatewayProxyEvent {
     return {
         body: body ? JSON.stringify(body) : null,

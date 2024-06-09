@@ -1,7 +1,4 @@
-import { Item } from './common/item';
-import { Submission } from './submission';
-import { Note } from './note';
-import { User } from './user';
+import { Item } from './common/item.js';
 
 export class QuestionRecord extends Item {
     public recordId: string;
@@ -10,7 +7,7 @@ export class QuestionRecord extends Item {
     public latestSubmissionId: string;
     public lastReviewDate: Date;
     public nextReviewDate: Date;
-    public notes: Array<string>;
+    public notes: string[];
     public submissionCount: number;
     public createdAt: Date;
     public updatedAt: Date;
@@ -23,7 +20,7 @@ export class QuestionRecord extends Item {
         latestSubmissionId: string,
         lastReviewDate: Date,
         nextReviewDate: Date,
-        notes: Array<string>,
+        notes: string[],
         submissionCount: number,
         createdAt: Date,
         updatedAt: Date,

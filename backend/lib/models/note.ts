@@ -1,4 +1,4 @@
-import { Item } from './common/item';
+import { Item } from './common/item.js';
 
 export class Note extends Item {
     public noteId: string;

@@ -1,11 +1,11 @@
-import { Item } from './common/item';
+import { Item } from './common/item.js';
 
 export class List extends Item {
     public listId: string;
     public listName: string;
-    public questions: Array<string>;
+    public questions: string[];
 
-    constructor(listId: string, listName: string, questions: Array<string>) {
+    constructor(listId: string, listName: string, questions: string[]) {
         super();
         this.listId = listId;
         this.listName = listName;

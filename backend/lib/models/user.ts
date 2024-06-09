@@ -1,4 +1,4 @@
-import { Item } from './common/item';
+import { Item } from './common/item.js';
 import { IsEmail } from 'class-validator';
 
 export class User extends Item {

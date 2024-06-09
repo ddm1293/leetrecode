@@ -1,6 +1,6 @@
 import { NestedStack } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { SubApiStackProps } from './utils/sub-api-stack-props';
+import { SubApiStackProps } from './utils/sub-api-stack-props.js';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { LambdaIntegration } from 'aws-cdk-lib/aws-apigateway';
@@ -16,10 +16,14 @@ export class UserApiStack extends NestedStack {
             },
         };
 
-        const createUserLambda: NodejsFunction = new NodejsFunction(this, 'CreateUserLambda', {
-            ...baseConfig,
-            entry: '../../lambdas/users/create-user.ts',
-        })
+        const createUserLambda: NodejsFunction = new NodejsFunction(
+            this,
+            'CreateUserLambda',
+            {
+                ...baseConfig,
+                entry: '../../lambdas/users/create-user.ts',
+            },
+        );
 
         props.table.grantReadWriteData(createUserLambda);
 

@@ -13,7 +13,9 @@ export class DynamoDBClientManager {
         if (!this.client) {
             this.client = DynamoDBDocumentClient.from(
                 new DynamoDBClient({
-                    region: isLocal ? 'localhost' : process.env.CDK_DEFAULT_REGION,
+                    region: isLocal
+                        ? 'localhost'
+                        : process.env.CDK_DEFAULT_REGION,
                     endpoint: isLocal ? 'http://localhost:8000' : undefined,
                 }),
             );

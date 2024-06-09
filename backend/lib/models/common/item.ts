@@ -1,4 +1,4 @@
-import { DynamoDBClientManager } from '../utils/dynamoDB-client-manager';
+import { DynamoDBClientManager } from '../utils/dynamoDB-client-manager.js';
 import {
     DeleteCommand,
     GetCommand,
@@ -20,13 +20,16 @@ export abstract class Item {
         };
     }
 
-    public toItem(): Record<string, any> {
-        return instanceToPlain(this)
+    public toItem(): Record<string, unknown> {
+        return instanceToPlain(this);
     }
 
-    public static async fromItem<T extends Item>(this: new (...args: any[]) => T, item: Record<string, unknown>): Promise<Item> {
+    public static async fromItem<T extends Item>(
+        this: new (...args: any[]) => T,
+        item: Record<string, unknown>,
+    ): Promise<Item> {
         const instance: T = plainToInstance(this, item);
-        await validateOrReject(instance)
+        await validateOrReject(instance);
         return instance;
     }
 
@@ -44,7 +47,7 @@ export abstract class Item {
         tableName: string,
         pk: string,
         sk?: string,
-    ): Promise<{ [key: string]: any } | null> {
+    ): Promise<Record<string, unknown> | null> {
         const client = DynamoDBClientManager.getClient();
         const key = sk ? { PK: pk, SK: sk } : { PK: pk };
         const item = await client.send(
@@ -75,7 +78,7 @@ export abstract class Item {
     public async update(
         tableName: string,
         pk: string,
-        expressionConfig: { [key: string]: any },
+        expressionConfig: Record<string, any>,
         sk?: string,
     ): Promise<void> {
         const client = DynamoDBClientManager.getClient();
@@ -92,7 +95,7 @@ export abstract class Item {
     }
 }
 
-type Key = {
+interface Key {
     PK: string;
     SK: string;
-};
+}

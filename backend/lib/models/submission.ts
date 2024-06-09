@@ -1,4 +1,4 @@
-import { Item } from './common/item';
+import { Item } from './common/item.js';
 
 export class Submission extends Item {
     public submissionId: string;
