@@ -4,6 +4,8 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
+const isLocal = process.env.NODE_ENV !== 'production';
+
 export class DynamoDBClientManager {
     private static client: DynamoDBDocumentClient | null = null;
 
@@ -11,7 +13,8 @@ export class DynamoDBClientManager {
         if (!this.client) {
             this.client = DynamoDBDocumentClient.from(
                 new DynamoDBClient({
-                    region: process.env.CDK_DEFAULT_REGION,
+                    region: isLocal ? 'localhost' : process.env.CDK_DEFAULT_REGION,
+                    endpoint: isLocal ? 'http://localhost:8000' : undefined,
                 }),
             );
         }

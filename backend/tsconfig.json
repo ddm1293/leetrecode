@@ -19,7 +19,7 @@
         "emitDecoratorMetadata": true,
         "strictPropertyInitialization": false,
         "preserveConstEnums": true,
-        "noEmit": true,
+        "noEmit": false,
         "sourceMap": false,
         "moduleResolution": "node",
         "esModuleInterop": true,
@@ -33,5 +33,6 @@
         "resolveJsonModule": true,
         "allowJs": true,
     },
-    "exclude": ["node_modules", "cdk.out"]
+    "include": ["lib/**/*.ts"],
+    "exclude": ["node_modules", "cdk.out", "dist"]
 }
