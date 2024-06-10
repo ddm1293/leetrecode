@@ -13,6 +13,7 @@ export default tseslint.config(
             '.idea',
             'coverage',
             'package-lock.json',
+            '.aws-sam',
         ],
     },
     eslint.configs.recommended,
@@ -37,6 +38,6 @@ export default tseslint.config(
             'import/extensions': ['error', 'ignorePackages'],
         },
     },
-    eslintConfigPrettier,
-    eslintPluginPrettierRecommended,
+    // eslintConfigPrettier,
+    // eslintPluginPrettierRecommended,
 );

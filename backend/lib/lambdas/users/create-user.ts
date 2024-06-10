@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { LambdaInterface } from '@aws-lambda-powertools/commons/lib/cjs/types';
 import {
     APIGatewayProxyEvent,
@@ -11,6 +12,9 @@ import httpErrorHandler from '@middy/http-error-handler';
 import httpHeaderNormalizer from '@middy/http-header-normalizer';
 import httpJsonBodyParser from '@middy/http-json-body-parser';
 import { User } from '../../models/user.js';
+import { ParseUserError } from '../../common/errors/user-errors.js';
+import { EmptyRequestBodyError } from '../../common/errors/general-errors';
+import { ErrorHandler } from '../../common/errors/error-handler';
 
 @injectable()
 export class LambdaHandler implements LambdaInterface {
@@ -23,26 +27,41 @@ export class LambdaHandler implements LambdaInterface {
         event: APIGatewayProxyEvent,
         context: Context,
     ): Promise<APIGatewayProxyResult> {
-        const requestBody = event.body;
+        try {
+            const user: User = await this.parseEventIntoUser(event.body);
 
-        if (!requestBody || typeof requestBody !== 'object') {
-            return this.responseManager.createResponse(400, {
-                message:
-                    'Request body is required and must be a valid JSON object',
+            await user.save('userTable');
+
+            console.log('see if it is saved');
+
+            return this.responseManager.success(200, {
+                message: 'User created successfully',
+                user,
             });
+        } catch (error) {
+            return ErrorHandler.handleError(this.responseManager, error);
+        }
+    }
+
+    private async parseEventIntoUser(body: string | null): Promise<User> {
+        if (!body || typeof body !== 'object') {
+            throw new EmptyRequestBodyError(
+                'Request body is empty, potentially due to middy failing parsing incoming event'
+            );
         }
 
-        const user = await User.fromItem(
-            requestBody as Record<string, unknown>,
-        );
-
-        await user.save('userTable');
-
-        const response = {
-            message: 'User created successfully',
-            user,
-        };
-        return this.responseManager.createResponse(200, response);
+        try {
+            return await User.fromItem(body as Record<string, unknown>,);
+        } catch (error) {
+            if (error instanceof Error) {
+                throw new ParseUserError(
+                    "Failed to parse incoming event into a User object",
+                    error
+                );
+            } else {
+                throw new ParseUserError('Failed to parse incoming event into a User object');
+            }
+        }
     }
 }
 

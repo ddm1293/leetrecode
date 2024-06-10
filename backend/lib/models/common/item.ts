@@ -27,7 +27,7 @@ export abstract class Item {
     public static async fromItem<T extends Item>(
         this: new (...args: any[]) => T,
         item: Record<string, unknown>,
-    ): Promise<Item> {
+    ): Promise<T> {
         const instance: T = plainToInstance(this, item);
         await validateOrReject(instance);
         return instance;

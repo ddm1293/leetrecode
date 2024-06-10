@@ -10,3 +10,5 @@ node_modules
 cdk.out
 
 dist/
+.aws-sam/
+.idea
