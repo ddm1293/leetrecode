@@ -1,0 +1,23 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+
+Resources:
+  CreateUserFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: dist/lib/lambdas/users/create-user.handler
+      Runtime: nodejs20.x
+      Timeout: 10
+      CodeUri: .
+      Environment:
+        Variables:
+          TABLE_NAME: userTable
+          NODE_ENV: dev
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /users
+            Method: post
+
+
