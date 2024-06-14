@@ -20,8 +20,9 @@ export class ResponseManager {
     public failure(statusCode: number, error: Error): APIGatewayProxyResult {
         const errorBody = error instanceof BaseError ? error.toObject() : {
             errorCode: '999',
-            name: 'UnknownError',
-            message: 'Unknown error occurred.',
+            name: error.name,
+            message: 'Unknown error occurred: ' + error.message,
+            stack: error.stack,
         }
         return {
             statusCode,
