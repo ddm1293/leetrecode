@@ -1,6 +1,6 @@
 import { NestedStack } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { SubApiStackProps } from './utils/sub-api-stack-props.js';
+import { SubApiStackProps } from './common/sub-api-stack-props.js';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { LambdaIntegration } from 'aws-cdk-lib/aws-apigateway';
