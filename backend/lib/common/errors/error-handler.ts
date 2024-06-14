@@ -7,6 +7,7 @@ export class ErrorHandler {
         error: unknown
     ): APIGatewayProxyResult {
         if (error instanceof Error) {
+            console.log('there is an error');
             return responseManager.failure(500, error);
         }
         return responseManager.failure(500, new Error('Unknown error occurred'));

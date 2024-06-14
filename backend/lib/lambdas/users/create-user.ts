@@ -13,8 +13,8 @@ import httpHeaderNormalizer from '@middy/http-header-normalizer';
 import httpJsonBodyParser from '@middy/http-json-body-parser';
 import { User } from '../../models/user.js';
 import { ParseUserError } from '../../common/errors/user-errors.js';
-import { EmptyRequestBodyError } from '../../common/errors/general-errors';
-import { ErrorHandler } from '../../common/errors/error-handler';
+import { EmptyRequestBodyError } from '../../common/errors/general-errors.js';
+import { ErrorHandler } from '../../common/errors/error-handler.js';
 
 @injectable()
 export class LambdaHandler implements LambdaInterface {
@@ -28,7 +28,11 @@ export class LambdaHandler implements LambdaInterface {
         context: Context,
     ): Promise<APIGatewayProxyResult> {
         try {
+            console.log('Incoming event:', JSON.stringify(event));
+
             const user: User = await this.parseEventIntoUser(event.body);
+
+            console.log('Parsed user:', JSON.stringify(user));
 
             await user.save('userTable');
 

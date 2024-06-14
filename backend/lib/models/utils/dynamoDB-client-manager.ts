@@ -16,7 +16,7 @@ export class DynamoDBClientManager {
                     region: isLocal
                         ? 'localhost'
                         : process.env.CDK_DEFAULT_REGION,
-                    endpoint: isLocal ? 'http://localhost:8000' : undefined,
+                    endpoint: isLocal ? 'http://dynamodb:8000' : undefined,
                 }),
             );
         }
