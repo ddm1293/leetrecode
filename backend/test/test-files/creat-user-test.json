@@ -1,5 +1,5 @@
 {
-  "body": "{\"username\":\"testuser\",\"email\":\"test@example.com\"}",
+  "body": "{\"username\":\"testuser\",\"email\":\"test@example.com\",\"password\":\"yourpassword\"}",
   "headers": {
     "Content-Type": "application/json"
   },

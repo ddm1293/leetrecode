@@ -22,7 +22,6 @@ export class ResponseManager {
             errorCode: '999',
             name: error.name,
             message: 'Unknown error occurred: ' + error.message,
-            stack: error.stack,
         }
         return {
             statusCode,

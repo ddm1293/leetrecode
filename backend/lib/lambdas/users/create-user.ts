@@ -32,8 +32,6 @@ export class LambdaHandler implements LambdaInterface {
 
             const user: User = await this.parseEventIntoUser(event.body);
 
-            console.log('Parsed user:', JSON.stringify(user));
-
             await user.save('userTable');
 
             console.log('see if it is saved');
