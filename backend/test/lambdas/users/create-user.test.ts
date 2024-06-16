@@ -41,12 +41,6 @@ describe('LambdaHandler', () => {
             mockDynamoDBDocumentClient.send as ReturnType<typeof vi.fn>
         ).mockResolvedValue({});
 
-        /*
-         * use as any here to turn off the type check because middy httpHeaderNormalizer
-         * requires the mockEvent to have an extra field rawHeaders: Record<string, string>
-         * that does not originally exist on APIGatewayProxyEvent and is to be added runtime.
-         */
-
         const res = await handler(mockEvent as never, {} as Context);
         expect(res.statusCode).toBe(200);
         const body = JSON.parse(res.body);

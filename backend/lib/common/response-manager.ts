@@ -2,7 +2,8 @@ import 'reflect-metadata';
 import { singleton } from 'tsyringe';
 import { APIGatewayProxyResult } from 'aws-lambda';
 import { headers } from './headers.js';
-import { BaseError } from '../../common/errors/base-error.js';
+import { BaseError } from './errors/base-error.js';
+
 
 @singleton()
 export class ResponseManager {

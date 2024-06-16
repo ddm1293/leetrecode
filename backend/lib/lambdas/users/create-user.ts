@@ -6,7 +6,7 @@ import {
     Context,
 } from 'aws-lambda';
 import { container, inject, injectable } from 'tsyringe';
-import { ResponseManager } from '../../models/utils/response-manager.js';
+import { ResponseManager } from '../../common/response-manager.js';
 import middy from '@middy/core';
 import httpErrorHandler from '@middy/http-error-handler';
 import httpHeaderNormalizer from '@middy/http-header-normalizer';
@@ -28,13 +28,9 @@ export class LambdaHandler implements LambdaInterface {
         context: Context,
     ): Promise<APIGatewayProxyResult> {
         try {
-            console.log('Incoming event:', JSON.stringify(event));
-
             const user: User = await this.parseEventIntoUser(event.body);
 
             await user.save('userTable');
-
-            console.log('see if it is saved');
 
             return this.responseManager.success(200, {
                 message: 'User created successfully',

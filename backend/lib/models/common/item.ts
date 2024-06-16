@@ -1,4 +1,4 @@
-import { DynamoDBClientManager } from '../utils/dynamoDB-client-manager.js';
+import { DynamoDBClientManager } from '../../common/dynamoDB-client/dynamoDB-client-manager.js';
 import {
     DeleteCommand,
     GetCommand,
