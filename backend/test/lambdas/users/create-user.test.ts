@@ -3,8 +3,6 @@ import { describe, it, expect, vi } from 'vitest';
 import { handler } from '../../../lib/lambdas/users/create-user.js';
 import { Context } from 'aws-lambda';
 import { createMockEvent } from '../utils/create-mock-event.js';
-import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
@@ -30,18 +28,8 @@ describe('LambdaHandler', () => {
             'Content-Type': 'application/json',
         });
 
-        const mockDynamoDBDocumentClient: DynamoDBDocumentClient =
-            DynamoDBDocumentClient.from(
-                new DynamoDBClient({
-                    region: process.env.CDK_DEFAULT_REGION,
-                }),
-            );
-
-        (
-            mockDynamoDBDocumentClient.send as ReturnType<typeof vi.fn>
-        ).mockResolvedValue({});
-
         const res = await handler(mockEvent as never, {} as Context);
+        console.log("see response", res);
         expect(res.statusCode).toBe(200);
         const body = JSON.parse(res.body);
         expect(body.user).toBeDefined();

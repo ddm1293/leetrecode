@@ -5,7 +5,6 @@ import {
     APIGatewayProxyResult,
     Context,
 } from 'aws-lambda';
-import { container, inject, injectable } from 'tsyringe';
 import { ResponseManager } from '../../common/response-manager.js';
 import middy from '@middy/core';
 import httpErrorHandler from '@middy/http-error-handler';
@@ -16,12 +15,7 @@ import { ParseUserError } from '../../common/errors/user-errors.js';
 import { EmptyRequestBodyError } from '../../common/errors/general-errors.js';
 import { ErrorHandler } from '../../common/errors/error-handler.js';
 
-@injectable()
 export class LambdaHandler implements LambdaInterface {
-    constructor(
-        @inject(ResponseManager)
-        private readonly responseManager: ResponseManager,
-    ) {}
 
     public async handler(
         event: APIGatewayProxyEvent,
@@ -32,12 +26,12 @@ export class LambdaHandler implements LambdaInterface {
 
             await user.save('userTable');
 
-            return this.responseManager.success(200, {
+            return ResponseManager.success(200, {
                 message: 'User created successfully',
                 user,
             });
         } catch (error) {
-            return ErrorHandler.handleError(this.responseManager, error);
+            return ErrorHandler.handleError(error);
         }
     }
 
@@ -63,11 +57,7 @@ export class LambdaHandler implements LambdaInterface {
     }
 }
 
-// TODO: figure out how this register/resolve works
-container.registerSingleton(LambdaHandler);
-container.registerSingleton(ResponseManager);
-
-const handlerInstance = container.resolve(LambdaHandler);
+const handlerInstance: LambdaHandler = new LambdaHandler();
 const lambdaHandler = handlerInstance.handler.bind(handlerInstance);
 
 export const handler = middy()

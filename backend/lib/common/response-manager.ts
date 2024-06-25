@@ -1,13 +1,10 @@
 import 'reflect-metadata';
-import { singleton } from 'tsyringe';
 import { APIGatewayProxyResult } from 'aws-lambda';
 import { headers } from './headers.js';
 import { BaseError } from './errors/base-error.js';
 
-
-@singleton()
 export class ResponseManager {
-    public success(
+    public static success(
         statusCode: number,
         body?: Record<string, unknown>,
     ): APIGatewayProxyResult {
@@ -18,7 +15,7 @@ export class ResponseManager {
         };
     }
 
-    public failure(statusCode: number, error: Error): APIGatewayProxyResult {
+    public static failure(statusCode: number, error: Error): APIGatewayProxyResult {
         const errorBody = error instanceof BaseError ? error.toObject() : {
             errorCode: '999',
             name: error.name,
