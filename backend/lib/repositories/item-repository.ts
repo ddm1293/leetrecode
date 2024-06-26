@@ -1,8 +1,9 @@
 import { DynamoDBClientManager } from '../common/dynamoDB-client/dynamoDB-client-manager.js';
 import { Item } from '../models/common/item.js';
 import { DeleteCommand, GetCommand, PutCommand, UpdateCommand } from '@aws-sdk/lib-dynamodb';
+import { Repository } from './repository.js';
 
-export class ItemRepository {
+export class ItemRepository implements Repository {
     private client = DynamoDBClientManager.getClient();
     private static instance: ItemRepository;
 
