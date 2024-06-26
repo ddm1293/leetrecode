@@ -45,10 +45,10 @@
         "class-validator": "^0.14.1",
         "constructs": "^10.0.0",
         "dotenv": "^16.4.5",
+        "inversify": "^6.0.2",
         "lodash": "^4.17.21",
         "reflect-metadata": "^0.2.2",
         "source-map-support": "^0.5.21",
-        "tsyringe": "^4.8.0",
         "ulid": "^2.3.0"
     }
 }

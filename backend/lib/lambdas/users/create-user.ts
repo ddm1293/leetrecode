@@ -14,6 +14,7 @@ import { User } from '../../models/user.js';
 import { ParseUserError } from '../../common/errors/user-errors.js';
 import { EmptyRequestBodyError } from '../../common/errors/general-errors.js';
 import { ErrorHandler } from '../../common/errors/error-handler.js';
+import { ItemRepository } from '../../repositories/item-repository.js'
 
 export class LambdaHandler implements LambdaInterface {
 
@@ -24,7 +25,7 @@ export class LambdaHandler implements LambdaInterface {
         try {
             const user: User = await this.parseEventIntoUser(event.body);
 
-            await user.save('userTable');
+            await ItemRepository.getInstance().save(user, 'userTable')
 
             return ResponseManager.success(200, {
                 message: 'User created successfully',
