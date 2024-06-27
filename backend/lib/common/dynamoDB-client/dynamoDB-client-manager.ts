@@ -1,25 +1,29 @@
+import 'reflect-metadata';
 import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import * as dotenv from 'dotenv';
+import { injectable } from 'inversify';
 
 dotenv.config();
 
 const isLocal = process.env.NODE_ENV !== 'production';
 
+@injectable()
 export class DynamoDBClientManager {
-    private static client: DynamoDBDocumentClient | null = null;
+    public _client: DynamoDBDocumentClient;
 
-    public static getClient(): DynamoDBDocumentClient {
-        if (!this.client) {
-            this.client = DynamoDBDocumentClient.from(
-                new DynamoDBClient({
-                    region: isLocal
-                        ? 'localhost'
-                        : process.env.CDK_DEFAULT_REGION,
-                    endpoint: isLocal ? 'http://dynamodb:8000' : undefined,
-                }),
-            );
-        }
-        return this.client;
+    constructor() {
+        this._client = DynamoDBDocumentClient.from(
+            new DynamoDBClient({
+                region: isLocal
+                    ? 'localhost'
+                    : process.env.CDK_DEFAULT_REGION,
+                endpoint: isLocal ? 'http://dynamodb:8000' : undefined,
+            }),
+        );
+    }
+
+    get client(): DynamoDBDocumentClient {
+        return this._client;
     }
 }

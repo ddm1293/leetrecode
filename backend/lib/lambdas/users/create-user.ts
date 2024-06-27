@@ -11,21 +11,26 @@ import httpErrorHandler from '@middy/http-error-handler';
 import httpHeaderNormalizer from '@middy/http-header-normalizer';
 import httpJsonBodyParser from '@middy/http-json-body-parser';
 import { User } from '../../models/user.js';
-import { ParseUserError } from '../../common/errors/user-errors.js';
-import { EmptyRequestBodyError } from '../../common/errors/general-errors.js';
 import { ErrorHandler } from '../../common/errors/error-handler.js';
-import { ItemRepository } from '../../repositories/item-repository.js'
+import { injectable, inject } from 'inversify';
+import { TYPES } from '../../common/types.js';
+import { container } from '../../common/inversify.config.js';
+import { UserServiceImpl } from '../../services/user-service-impl.js';
 
+@injectable()
 export class LambdaHandler implements LambdaInterface {
+    private userService: UserServiceImpl;
+
+    public constructor(@inject(TYPES.UserService) userService: UserServiceImpl) {
+        this.userService = userService;
+    }
 
     public async handler(
         event: APIGatewayProxyEvent,
         context: Context,
     ): Promise<APIGatewayProxyResult> {
         try {
-            const user: User = await this.parseEventIntoUser(event.body);
-
-            await ItemRepository.getInstance().save(user, 'userTable')
+            const user: User = await this.userService.add(event.body);
 
             return ResponseManager.success(200, {
                 message: 'User created successfully',
@@ -35,30 +40,9 @@ export class LambdaHandler implements LambdaInterface {
             return ErrorHandler.handleError(error);
         }
     }
-
-    private async parseEventIntoUser(body: string | null): Promise<User> {
-        if (!body || typeof body !== 'object') {
-            throw new EmptyRequestBodyError(
-                'Request body is empty, potentially due to middy failing parsing incoming event'
-            );
-        }
-
-        try {
-            return await User.fromItem(body as Record<string, unknown>,);
-        } catch (error) {
-            if (error instanceof Error) {
-                throw new ParseUserError(
-                    "Failed to parse incoming event into a User object",
-                    error
-                );
-            } else {
-                throw new ParseUserError('Failed to parse incoming event into a User object');
-            }
-        }
-    }
 }
 
-const handlerInstance: LambdaHandler = new LambdaHandler();
+const handlerInstance: LambdaHandler = container.resolve(LambdaHandler)
 const lambdaHandler = handlerInstance.handler.bind(handlerInstance);
 
 export const handler = middy()

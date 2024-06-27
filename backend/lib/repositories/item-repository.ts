@@ -1,17 +1,23 @@
+import 'reflect-metadata';
 import { DynamoDBClientManager } from '../common/dynamoDB-client/dynamoDB-client-manager.js';
 import { Item } from '../models/common/item.js';
-import { DeleteCommand, GetCommand, PutCommand, UpdateCommand } from '@aws-sdk/lib-dynamodb';
+import {
+    DeleteCommand,
+    DynamoDBDocumentClient,
+    GetCommand,
+    PutCommand,
+    PutCommandOutput,
+    UpdateCommand,
+} from '@aws-sdk/lib-dynamodb';
 import { Repository } from './repository.js';
+import { inject, injectable } from 'inversify';
 
+@injectable()
 export class ItemRepository implements Repository {
-    private client = DynamoDBClientManager.getClient();
-    private static instance: ItemRepository;
+    private client: DynamoDBDocumentClient;
 
-    public static getInstance(): ItemRepository {
-        if (!ItemRepository.instance) {
-            ItemRepository.instance = new ItemRepository();
-        }
-        return ItemRepository.instance;
+    constructor(@inject(DynamoDBClientManager) DBClient: DynamoDBClientManager) {
+        this.client = DBClient.client
     }
 
     async save(item: Item, tableName: string): Promise<void> {
