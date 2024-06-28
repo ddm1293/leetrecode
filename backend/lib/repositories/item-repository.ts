@@ -6,11 +6,11 @@ import {
     DynamoDBDocumentClient,
     GetCommand,
     PutCommand,
-    PutCommandOutput,
     UpdateCommand,
 } from '@aws-sdk/lib-dynamodb';
 import { Repository } from './repository.js';
 import { inject, injectable } from 'inversify';
+import { ItemTransformer } from '../models/common/item-transformer.js';
 
 @injectable()
 export class ItemRepository implements Repository {
@@ -24,7 +24,7 @@ export class ItemRepository implements Repository {
         await this.client.send(
             new PutCommand({
                 TableName: tableName,
-                Item: item.toItem(),
+                Item: ItemTransformer.serialize(item),
             }),
         );
     }

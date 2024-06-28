@@ -4,8 +4,7 @@ import { inject, injectable } from 'inversify';
 import { TYPES } from '../common/types.js';
 import { ItemRepository } from '../repositories/item-repository.js';
 import { UserService } from './user-service.js';
-import { EmptyRequestBodyError } from '../common/errors/general-errors.js';
-import { ParseUserError } from '../common/errors/user-errors.js';
+import { EventParser } from '../common/event-parser.js';
 
 @injectable()
 export class UserServiceImpl implements UserService {
@@ -26,7 +25,7 @@ export class UserServiceImpl implements UserService {
         throw new Error('Method not implemented.');
     }
     async add(body: string | null): Promise<User> {
-        const user: User = await this.parseEventIntoUser(body);
+        const user: User = await EventParser.parse(User, body);
 
         await this.repository.save(user, 'userTable');
 
@@ -34,26 +33,5 @@ export class UserServiceImpl implements UserService {
     }
     async archive(id: string): Promise<void> {
         throw new Error('Method not implemented.');
-    }
-
-    private async parseEventIntoUser(body: string | null): Promise<User> {
-        if (!body || typeof body !== 'object') {
-            throw new EmptyRequestBodyError(
-                'Request body is empty, potentially due to middy failing parsing incoming event'
-            );
-        }
-
-        try {
-            return await User.fromItem(body as Record<string, unknown>,);
-        } catch (error) {
-            if (error instanceof Error) {
-                throw new ParseUserError(
-                    "Failed to parse incoming event into a User object",
-                    error
-                );
-            } else {
-                throw new ParseUserError('Failed to parse incoming event into a User object');
-            }
-        }
     }
 }
