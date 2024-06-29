@@ -1,7 +1,7 @@
 import { Container } from 'inversify';
-import { Repository } from '../repositories/repository.js';
+import { Repository } from '../repositories/common/repository.js';
 import { TYPES } from './types.js';
-import { ItemRepository } from '../repositories/item-repository.js';
+import { ItemRepository } from '../repositories/common/item-repository.js';
 import { DynamoDBClientManager } from './dynamoDB-client/dynamoDB-client-manager.js';
 import { UserService } from '../services/user-service.js';
 import { UserServiceImpl } from '../services/user-service-impl.js';

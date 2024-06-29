@@ -16,6 +16,7 @@ import { injectable, inject } from 'inversify';
 import { TYPES } from '../../common/types.js';
 import { container } from '../../common/inversify.config.js';
 import { UserServiceImpl } from '../../services/user-service-impl.js';
+import { EventParser } from '../../common/event-parser';
 
 @injectable()
 export class LambdaHandler implements LambdaInterface {
@@ -30,7 +31,9 @@ export class LambdaHandler implements LambdaInterface {
         context: Context,
     ): Promise<APIGatewayProxyResult> {
         try {
-            const user: User = await this.userService.add(event.body);
+            const user: User = await EventParser.parse(User, event.body);
+
+            await this.userService.add(user);
 
             return ResponseManager.success(200, {
                 message: 'User created successfully',

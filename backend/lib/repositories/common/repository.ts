@@ -1,4 +1,4 @@
-import { Item } from '../models/common/item.js';
+import { Item } from '../../models/common/item.js';
 
 export interface Repository {
     save(item: Item, tableName: string): Promise<void>;

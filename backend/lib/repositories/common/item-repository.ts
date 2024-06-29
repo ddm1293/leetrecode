@@ -1,6 +1,6 @@
 import 'reflect-metadata';
-import { DynamoDBClientManager } from '../common/dynamoDB-client/dynamoDB-client-manager.js';
-import { Item } from '../models/common/item.js';
+import { DynamoDBClientManager } from '../../common/dynamoDB-client/dynamoDB-client-manager.js';
+import { Item } from '../../models/common/item.js';
 import {
     DeleteCommand,
     DynamoDBDocumentClient,
@@ -10,7 +10,7 @@ import {
 } from '@aws-sdk/lib-dynamodb';
 import { Repository } from './repository.js';
 import { inject, injectable } from 'inversify';
-import { ItemTransformer } from '../models/common/item-transformer.js';
+import { ItemTransformer } from '../../models/common/item-transformer.js';
 
 @injectable()
 export class ItemRepository implements Repository {
