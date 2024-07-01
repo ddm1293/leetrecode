@@ -11,30 +11,34 @@ interface ApiStackProps extends StackProps {
 }
 
 export class ApiStack extends Stack {
+    public userStack: UserApiStack;
+    public submissionStack: SubmissionApiStack;
+    public recordStack: RecordApiStack;
+
     constructor(scope: Construct, id: string, props: ApiStackProps) {
         super(scope, id, props);
 
         // TODO: understand RestApi construct
         const restApi: RestApi = new RestApi(this, 'MyApi', {
-            restApiName: 'Leetrecode api gateway',
+            restApiName: 'Leetrecode Api Gateway',
             description: 'This service serves my API.',
         });
 
-        const userStack = new UserApiStack(this, 'userApiStack', {
+        this.userStack = new UserApiStack(this, 'UserApiStack', {
             api: restApi,
             table: props.tables['userTable'],
         });
 
-        const submissionStack = new SubmissionApiStack(
+        this.submissionStack = new SubmissionApiStack(
             this,
-            'submissionApiStack',
+            'SubmissionApiStack',
             {
                 api: restApi,
                 table: props.tables['userTable'],
             },
         );
 
-        const recordStack = new RecordApiStack(this, 'recordApiStack', {
+        this.recordStack = new RecordApiStack(this, 'RecordApiStack', {
             api: restApi,
             table: props.tables['userTable'],
         });

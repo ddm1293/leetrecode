@@ -1,5 +1,9 @@
 import { Stack, StackProps } from 'aws-cdk-lib';
-import { AttributeType, BillingMode, Table } from 'aws-cdk-lib/aws-dynamodb';
+import {
+    AttributeType,
+    BillingMode,
+    Table,
+} from 'aws-cdk-lib/aws-dynamodb';
 import { Construct } from 'constructs';
 
 export class DatabaseStack extends Stack {
@@ -14,6 +18,14 @@ export class DatabaseStack extends Stack {
             partitionKey: { name: 'PK', type: AttributeType.STRING },
             sortKey: { name: 'SK', type: AttributeType.STRING },
             billingMode: BillingMode.PAY_PER_REQUEST,
+        });
+
+        this.userTable.addGlobalSecondaryIndex({
+            indexName: 'userEmailIndex',
+            partitionKey: {
+                name: 'email',
+                type: AttributeType.STRING,
+            },
         });
     }
 }

@@ -7,6 +7,7 @@ Resources:
     Properties:
       Handler: dist/lib/lambdas/users/create-user.handler
       Runtime: nodejs20.x
+      MemorySize: 1024
       Timeout: 10
       CodeUri: .
       Environment:
