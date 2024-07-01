@@ -36,4 +36,32 @@ describe('LambdaHandler', () => {
         expect(body.user.userId).toBe('test-user-id');
         expect(body.user.email).toBe('test@example.com');
     });
+
+    it('should be able to throw an error to add an existing user', async () => {
+        const mockBody = {
+            userId: 'test-user-id',
+            email: 'test@example.com',
+            password: 'password123',
+        };
+
+        const mockEvent = createMockEvent(mockBody, {
+            'Content-Type': 'application/json',
+        });
+
+        const res = await handler(mockEvent as never, {} as Context);
+        expect(res.statusCode).toBe(200);
+
+        const mockBody2 = {
+            userId: 'test-user-id2',
+            email: 'test@example.com',
+            password: 'password123',
+        };
+
+        const mockEvent2 = createMockEvent(mockBody2, {
+            'Content-Type': 'application/json',
+        });
+
+        const res2 = await handler(mockEvent2 as never, {} as Context);
+        expect(res.statusCode).toBe(400);
+    })
 });

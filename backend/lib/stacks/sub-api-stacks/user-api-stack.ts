@@ -4,6 +4,7 @@ import { SubApiStackProps } from './common/sub-api-stack-props.js';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { LambdaIntegration } from 'aws-cdk-lib/aws-apigateway';
+import path from 'node:path';
 
 export class UserApiStack extends NestedStack {
     constructor(scope: Construct, id: string, props: SubApiStackProps) {
@@ -21,7 +22,8 @@ export class UserApiStack extends NestedStack {
             'CreateUserLambda',
             {
                 ...baseConfig,
-                entry: '../../lambdas/users/create-user.ts',
+                entry: path.join(__dirname, '../../lambdas/users/create-user.ts'),
+                handler: 'handler'
             },
         );
 
