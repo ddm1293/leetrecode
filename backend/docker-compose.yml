@@ -1,0 +1,11 @@
+version: "3.7"
+
+name: leetrecode
+
+services:
+  testing-db:
+    container_name: dynamodb
+    image: amazon/dynamodb-local:latest
+    ports:
+      - "8000:8000"
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ."

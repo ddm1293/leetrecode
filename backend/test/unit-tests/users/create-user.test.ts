@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { describe, it, expect, vi } from 'vitest';
 import { handler } from '../../../lib/lambdas/users/create-user.js';
 import { Context } from 'aws-lambda';
-import { createMockEvent } from '../utils/create-mock-event.js';
+import { createMockEvent } from '../../utils/create-mock-event.js';
 import * as dotenv from 'dotenv';
 
 dotenv.config();

@@ -17,6 +17,7 @@ export class UserServiceImpl implements UserService {
         throw new Error('Method not implemented.');
     }
     async findOneByEmail(email: string): Promise<User> {
+
         throw new Error('Method not implemented.');
     }
     async update(userId: string, data: User): Promise<void> {

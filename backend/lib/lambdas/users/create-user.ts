@@ -16,7 +16,7 @@ import { injectable, inject } from 'inversify';
 import { TYPES } from '../../common/types.js';
 import { container } from '../../common/inversify.config.js';
 import { UserServiceImpl } from '../../services/user-service-impl.js';
-import { EventParser } from '../../common/event-parser';
+import { EventParser } from '../../common/event-parser.js';
 
 @injectable()
 export class LambdaHandler implements LambdaInterface {
