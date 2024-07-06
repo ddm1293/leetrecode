@@ -1,10 +1,10 @@
 import { Item } from './common/item.js';
 import { IsEmail } from 'class-validator';
+import { Expose } from 'class-transformer';
 
 export class User extends Item {
-    @IsEmail()
-    public email: string;
-    public password: string;
+    @IsEmail() @Expose() public email: string;
+    @Expose() public password: string;
 
     constructor(email: string, password: string) {
         super();

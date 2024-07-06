@@ -4,4 +4,6 @@ export enum ErrorCode {
 
     // User Error
     PARSE_USER_ERROR = 201,
+    PERSIST_USER_ERROR= 202,
+    USER_ALREADY_EXISTS= 203,
 }

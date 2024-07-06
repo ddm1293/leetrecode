@@ -28,7 +28,11 @@ export const setup = async (ddb: DynamoDBDocumentClient, tableName: string) => {
                 {
                     "AttributeName": "SK",
                     "AttributeType": "S"
-                }
+                },
+                {
+                    "AttributeName": "email",
+                    "AttributeType": "S"
+                },
             ],
             KeySchema: [
                 {
@@ -42,6 +46,20 @@ export const setup = async (ddb: DynamoDBDocumentClient, tableName: string) => {
             ],
             TableName: tableName,
             BillingMode: "PAY_PER_REQUEST",
+            GlobalSecondaryIndexes: [
+                {
+                    IndexName: "userEmailIndex",
+                    KeySchema: [
+                        {
+                            AttributeName: "email",
+                            KeyType: "HASH"
+                        }
+                    ],
+                    Projection: {
+                        ProjectionType: "ALL"
+                    }
+                }
+            ]
         }));
 
         await pollTable(ddb, tableName);

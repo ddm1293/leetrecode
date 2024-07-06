@@ -5,6 +5,6 @@ import { PutCommandOutput } from '@aws-sdk/lib-dynamodb';
 export interface Service<T extends Item> {
     findOne(userId: string, ...params: string[]): Promise<T>;
     update(userId: string, data: T): Promise<void>;
-    add(item: T): Promise<T>;
+    add(tableName:string, item: T): Promise<T>;
     archive(id: string): Promise<void>;
 }

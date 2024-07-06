@@ -14,7 +14,7 @@ import { ItemTransformer } from '../../models/common/item-transformer.js';
 
 @injectable()
 export class ItemRepository implements Repository {
-    private client: DynamoDBDocumentClient;
+    protected client: DynamoDBDocumentClient;
 
     constructor(@inject(DynamoDBClientManager) DBClient: DynamoDBClientManager) {
         this.client = DBClient.client

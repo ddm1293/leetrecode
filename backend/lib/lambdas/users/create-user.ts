@@ -33,7 +33,7 @@ export class LambdaHandler implements LambdaInterface {
         try {
             const user: User = await EventParser.parse(User, event.body);
 
-            await this.userService.add(user);
+            await this.userService.add('userTable',user);
 
             return ResponseManager.success(200, {
                 message: 'User created successfully',
