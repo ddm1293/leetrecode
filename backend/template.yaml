@@ -5,7 +5,7 @@ Resources:
   CreateUserFunction:
     Type: 'AWS::Serverless::Function'
     Properties:
-      Handler: dist/lib/lambdas/users/create-user.handler
+      Handler: dist/lib/lambdas/users/create-user.createUserHandler
       Runtime: nodejs20.x
       MemorySize: 1024
       Timeout: 10

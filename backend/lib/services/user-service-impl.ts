@@ -4,7 +4,13 @@ import { inject, injectable } from 'inversify';
 import { TYPES } from '../common/types.js';
 import { UserService } from './user-service.js';
 import { UserRepository } from '../repositories/user-repository.js';
-import { PersistUserError, UserAlreadyExistsError } from '../common/errors/user-errors.js';
+import {
+    ArchiveUserError, DeleteNonExistentUserError,
+    PersistUserError,
+    UserAlreadyExistsError,
+    UserNotFoundError,
+} from '../common/errors/user-errors.js';
+import { Key } from '../models/common/item.js';
 
 @injectable()
 export class UserServiceImpl implements UserService {
@@ -17,12 +23,15 @@ export class UserServiceImpl implements UserService {
     async findOne(userId: string): Promise<User> {
         throw new Error('Method not implemented.');
     }
+
     async findOneByEmail(tableName:string, email: string): Promise<User | null> {
         return this.repository.findUserByEmail(tableName, email);
     }
+
     async update(userId: string, data: User): Promise<void> {
         throw new Error('Method not implemented.');
     }
+
     async add(tableName: string, user: User): Promise<User> {
         const checkUser = await this.repository.findUserByEmail(tableName, user.email);
         if (checkUser) {
@@ -38,7 +47,19 @@ export class UserServiceImpl implements UserService {
         }
 
     }
-    async archive(id: string): Promise<void> {
-        throw new Error('Method not implemented.');
+
+    async archive(tableName: string, email: string): Promise<void> {
+        const user: User | null = await this.repository.findUserByEmail(tableName, email);
+        if (!user) {
+            throw new DeleteNonExistentUserError(`User with email ${email} does not exist, cannot be deleted`);
+        }
+
+        try {
+            const key: Key = user.keys();
+            await this.repository.archive(tableName, key);
+        } catch (error) {
+            console.error(error);
+            throw new ArchiveUserError('Failed to archive the user into DB')
+        }
     }
 }

@@ -19,7 +19,7 @@ import { UserServiceImpl } from '../../services/user-service-impl.js';
 import { EventParser } from '../../common/event-parser.js';
 
 @injectable()
-export class LambdaHandler implements LambdaInterface {
+export class CreateUserHandler implements LambdaInterface {
     private userService: UserServiceImpl;
 
     public constructor(@inject(TYPES.UserService) userService: UserServiceImpl) {
@@ -33,7 +33,7 @@ export class LambdaHandler implements LambdaInterface {
         try {
             const user: User = await EventParser.parse(User, event.body);
 
-            await this.userService.add('userTable',user);
+            await this.userService.add('userTable', user);
 
             return ResponseManager.success(200, {
                 message: 'User created successfully',
@@ -45,10 +45,10 @@ export class LambdaHandler implements LambdaInterface {
     }
 }
 
-const handlerInstance: LambdaHandler = container.resolve(LambdaHandler)
+const handlerInstance: CreateUserHandler = container.resolve(CreateUserHandler)
 const lambdaHandler = handlerInstance.handler.bind(handlerInstance);
 
-export const handler = middy()
+export const createUserHandler = middy()
     .use(httpHeaderNormalizer())
     .use(httpJsonBodyParser())
     .use(httpErrorHandler())

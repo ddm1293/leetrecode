@@ -17,7 +17,7 @@ export abstract class Item {
     }
 }
 
-interface Key {
+export interface Key {
     PK: string;
     SK: string;
 }

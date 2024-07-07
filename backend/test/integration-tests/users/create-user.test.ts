@@ -2,7 +2,7 @@ import { DynamoDBClient, } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 import { beforeEach, afterEach, describe, it, expect } from 'vitest';
 import { createMockEvent } from '../../utils/create-mock-event.js'
-import { handler } from '../../../lib/lambdas/users/create-user.js';
+import { createUserHandler } from '../../../lib/lambdas/users/create-user.js';
 import { Context } from 'aws-lambda';
 import { setup, teardown } from '../../utils/setup.js';
 
@@ -34,7 +34,7 @@ describe('User CRUD test', () => {
             'Content-Type': 'application/json',
         });
 
-        const res = await handler(mockEvent as never, {} as Context);
+        const res = await createUserHandler(mockEvent as never, {} as Context);
         expect(res.statusCode).toBe(200);
         const body = JSON.parse(res.body);
         console.log("see body", body)
@@ -53,7 +53,7 @@ describe('User CRUD test', () => {
             'Content-Type': 'application/json',
         });
 
-        const res = await handler(mockEvent as never, {} as Context);
+        const res = await createUserHandler(mockEvent as never, {} as Context);
         expect(res.statusCode).toBe(200);
 
         const mockBody2 = {
@@ -65,7 +65,7 @@ describe('User CRUD test', () => {
             'Content-Type': 'application/json',
         });
 
-        const res2 = await handler(mockEvent2 as never, {} as Context);
+        const res2 = await createUserHandler(mockEvent2 as never, {} as Context);
         expect(res2.statusCode).toBe(500);
         const body = JSON.parse(res2.body);
         expect(body.errorCode).toBe(203);

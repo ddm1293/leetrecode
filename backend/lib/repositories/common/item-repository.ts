@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { DynamoDBClientManager } from '../../common/dynamoDB-client/dynamoDB-client-manager.js';
-import { Item } from '../../models/common/item.js';
+import { Item, Key } from '../../models/common/item.js';
 import {
     DeleteCommand,
     DynamoDBDocumentClient,
@@ -48,6 +48,19 @@ export class ItemRepository implements Repository {
                 Key: key,
             }),
         );
+    }
+
+    async archive(tableName: string, key: Key): Promise<void> {
+        await this.client.send(
+            new UpdateCommand({
+                TableName: tableName,
+                Key: key,
+                UpdateExpression: 'SET isArchived = :isArchived',
+                ExpressionAttributeValues: {
+                    ':isArchived': true,
+                },
+            })
+        )
     }
 
     async update(

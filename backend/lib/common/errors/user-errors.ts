@@ -18,3 +18,21 @@ export class UserAlreadyExistsError extends BaseError {
         super('UserAlreadyExistsError', message, ErrorCode.USER_ALREADY_EXISTS, originalError);
     }
 }
+
+export class UserNotFoundError extends BaseError {
+    constructor(message: string, originalError?: Error) {
+        super('UserNotFoundError', message, ErrorCode.USER_NOT_FOUND, originalError);
+    }
+}
+
+export class DeleteNonExistentUserError extends BaseError {
+    constructor(message: string, originalError?: Error) {
+        super('DeleteNonExistentUserError', message, ErrorCode.DELETE_NON_EXISTENT_USER_ERROR, originalError);
+    }
+}
+
+export class ArchiveUserError extends BaseError {
+    constructor(message: string, originalError?: Error) {
+        super('ArchiveUserError', message, ErrorCode.ARCHIVE_USER_ERROR, originalError);
+    }
+}
