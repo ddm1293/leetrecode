@@ -1,5 +1,5 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocumentClient, GetCommand, GetCommandOutput, QueryCommand } from '@aws-sdk/lib-dynamodb';
+import { DynamoDBDocumentClient, GetCommand, GetCommandOutput } from '@aws-sdk/lib-dynamodb';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { setup, teardown } from '../../utils/setup.js';
 import { createMockEvent } from '../../utils/create-mock-event.js';
@@ -7,6 +7,7 @@ import { createUserHandler } from '../../../lib/lambdas/users/create-user.js';
 import { Context } from 'aws-lambda';
 import { deleteUserHandler } from '../../../lib/lambdas/users/delete-user.js';
 import { ErrorCode } from '../../../lib/common/errors/error-code.js';
+import { getUserHandler } from '../../../lib/lambdas/users/get-user.js';
 
 
 const ddbClient = new DynamoDBClient({
@@ -39,12 +40,11 @@ describe('User CRUD test', () => {
 
         const res = await createUserHandler(mockEvent as never, {} as Context);
         expect(res.statusCode).toBe(200);
-        const body = JSON.parse(res.body);
 
         const archivedBeforeRes: GetCommandOutput = await ddb.send(new GetCommand({
             TableName: tableName,
             Key: {
-                PK: `USER#${body.user.id}`,
+                PK: `USER#${JSON.parse(res.body).user.id}`,
                 SK: "USER#METADATA"
             }
         }))
@@ -62,16 +62,8 @@ describe('User CRUD test', () => {
         const res2 = await deleteUserHandler(mockDeleteEvent as never, {} as Context);
         expect(res2.statusCode).toBe(200);
 
-        const res3 = await ddb.send(new QueryCommand({
-            TableName: tableName,
-            IndexName: 'userEmailIndex',
-            KeyConditionExpression: 'email = :email',
-            ExpressionAttributeValues: {
-                ':email': 'test@example.com',
-            },
-            Limit: 1
-        }));
-        const archivedUser = res3.Items[0];
+        const res3 = await getUserHandler(mockDeleteEvent as never, {} as Context);
+        const archivedUser = JSON.parse(res3.body).user;
         expect(archivedUser).toBeDefined;
         expect(archivedUser.email).toEqual(archivedBefore.email);
         expect(archivedUser).toHaveProperty('isArchived', true);
