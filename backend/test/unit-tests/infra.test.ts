@@ -1,8 +1,8 @@
 import { describe, test, expect } from 'vitest';
 import * as cdk from 'aws-cdk-lib'
-import { DatabaseStack } from '../lib/stacks/database-stack.js';
+import { DatabaseStack } from '../../lib/stacks/database-stack.js';
 import { Capture, Template } from 'aws-cdk-lib/assertions';
-import { ApiStack } from '../lib/stacks/api-stack';
+import { ApiStack } from '../../lib/stacks/api-stack.js';
 
 describe('Infra test', () => {
     test("DynamoDB table created", () => {

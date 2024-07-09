@@ -14,7 +14,7 @@ export class RecordService implements Service<QuestionRecord> {
     async update(id: string, data: QuestionRecord): Promise<void> {
         throw new Error('Method not implemented.');
     }
-    async add(item: QuestionRecord): Promise<QuestionRecord> {
+    async add(tableName: string, item: QuestionRecord): Promise<QuestionRecord> {
         throw new Error('Method not implemented.');
     }
     async archive(userId: string): Promise<void> {

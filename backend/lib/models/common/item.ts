@@ -1,5 +1,7 @@
+import { Expose } from 'class-transformer';
+
 export abstract class Item {
-    public id: string;
+    @Expose() public id: string;
     abstract get pk(): string;
     abstract get sk(): string;
 
@@ -15,7 +17,7 @@ export abstract class Item {
     }
 }
 
-interface Key {
+export interface Key {
     PK: string;
     SK: string;
 }

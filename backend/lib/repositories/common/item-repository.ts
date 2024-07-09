@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { DynamoDBClientManager } from '../../common/dynamoDB-client/dynamoDB-client-manager.js';
-import { Item } from '../../models/common/item.js';
+import { Item, Key } from '../../models/common/item.js';
 import {
     DeleteCommand,
     DynamoDBDocumentClient,
@@ -14,7 +14,7 @@ import { ItemTransformer } from '../../models/common/item-transformer.js';
 
 @injectable()
 export class ItemRepository implements Repository {
-    private client: DynamoDBDocumentClient;
+    protected client: DynamoDBDocumentClient;
 
     constructor(@inject(DynamoDBClientManager) DBClient: DynamoDBClientManager) {
         this.client = DBClient.client
@@ -48,6 +48,19 @@ export class ItemRepository implements Repository {
                 Key: key,
             }),
         );
+    }
+
+    async archive(tableName: string, key: Key): Promise<void> {
+        await this.client.send(
+            new UpdateCommand({
+                TableName: tableName,
+                Key: key,
+                UpdateExpression: 'SET isArchived = :isArchived',
+                ExpressionAttributeValues: {
+                    ':isArchived': true,
+                },
+            })
+        )
     }
 
     async update(
