@@ -7,7 +7,7 @@ import {
 } from 'aws-lambda';
 
 export function createMockEvent(
-    body: Record<string, unknown> | null,
+    body?: Record<string, unknown> | null,
     headers?: APIGatewayProxyEventHeaders,
     queryStringParameters?: APIGatewayProxyEventQueryStringParameters,
     pathParameters?: APIGatewayProxyEventPathParameters,

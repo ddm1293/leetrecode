@@ -7,6 +7,7 @@ import { injectable } from 'inversify';
 dotenv.config();
 
 const isLocal = process.env.NODE_ENV !== 'production';
+const isSamLocal = process.env.SAM_LOCAL === 'true';
 
 @injectable()
 export class DynamoDBClientManager {
@@ -18,7 +19,7 @@ export class DynamoDBClientManager {
                 region: isLocal
                     ? 'localhost'
                     : process.env.CDK_DEFAULT_REGION,
-                endpoint: isLocal ? 'http://dynamodb:8000' : undefined,
+                endpoint: isSamLocal ? 'http://host.docker.internal:8000' : isLocal ? 'http://localhost:8000' : undefined,
             }),
         );
     }
