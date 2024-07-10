@@ -30,7 +30,11 @@ export const setup = async (ddb: DynamoDBDocumentClient, tableName: string) => {
                     "AttributeType": "S"
                 },
                 {
-                    "AttributeName": "email",
+                    "AttributeName": "GSI1_PK",
+                    "AttributeType": "S"
+                },
+                {
+                    "AttributeName": "GSI1_SK",
                     "AttributeType": "S"
                 },
             ],
@@ -48,11 +52,15 @@ export const setup = async (ddb: DynamoDBDocumentClient, tableName: string) => {
             BillingMode: "PAY_PER_REQUEST",
             GlobalSecondaryIndexes: [
                 {
-                    IndexName: "userEmailIndex",
+                    IndexName: "GSI1",
                     KeySchema: [
                         {
-                            AttributeName: "email",
+                            AttributeName: "GSI1_PK",
                             KeyType: "HASH"
+                        },
+                        {
+                            AttributeName: "GSI1_SK",
+                            KeyType: "RANGE"
                         }
                     ],
                     Projection: {

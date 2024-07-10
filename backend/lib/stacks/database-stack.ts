@@ -15,17 +15,27 @@ export class DatabaseStack extends Stack {
 
         this.userTable = new Table(this, 'UserTable', {
             tableName: 'userTable',
-            partitionKey: { name: 'PK', type: AttributeType.STRING },
-            sortKey: { name: 'SK', type: AttributeType.STRING },
+            partitionKey: {
+                name: 'PK',
+                type: AttributeType.STRING
+            },
+            sortKey: {
+                name: 'SK',
+                type: AttributeType.STRING
+            },
             billingMode: BillingMode.PAY_PER_REQUEST,
         });
 
         this.userTable.addGlobalSecondaryIndex({
-            indexName: 'userEmailIndex',
+            indexName: 'GSI1',
             partitionKey: {
-                name: 'email',
+                name: 'GSI1_PK',
                 type: AttributeType.STRING,
             },
+            sortKey: {
+                name: 'GSI1_SK',
+                type: AttributeType.STRING,
+            }
         });
     }
 }

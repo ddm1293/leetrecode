@@ -1,6 +1,7 @@
 import { Item } from './common/item.js';
 import { IsEmail } from 'class-validator';
 import { Expose } from 'class-transformer';
+import { Gsi1 } from './common/gsi.js';
 
 export class User extends Item {
     @IsEmail() @Expose() public email: string;
@@ -19,5 +20,13 @@ export class User extends Item {
     }
     get sk(): string {
         return `USER#METADATA`;
+    }
+
+    public gsi1_pk(): string {
+        return this.email;
+    }
+
+    public gsi1_sk(): string {
+        return this.email;
     }
 }

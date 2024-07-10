@@ -66,6 +66,7 @@ describe('User CRUD test', () => {
         });
 
         const res2 = await createUserHandler(mockEvent2 as never, {} as Context);
+        console.log(res)
         expect(res2.statusCode).toBe(500);
         const body = JSON.parse(res2.body);
         expect(body.errorCode).toBe(203);

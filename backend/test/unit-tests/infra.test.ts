@@ -39,18 +39,26 @@ describe('Infra test', () => {
                     AttributeType: 'S',
                 },
                 {
-                    AttributeName: 'email',
+                    AttributeName: 'GSI1_PK',
                     AttributeType: 'S',
                 },
+                {
+                    AttributeName: 'GSI1_SK',
+                    AttributeType: 'S',
+                }
             ],
             GlobalSecondaryIndexes: [
                 {
-                    IndexName: 'userEmailIndex',
+                    IndexName: 'GSI1',
                     KeySchema: [
                         {
-                            AttributeName: 'email',
+                            AttributeName: 'GSI1_PK',
                             KeyType: 'HASH',
                         },
+                        {
+                            AttributeName: 'GSI1_SK',
+                            KeyType: 'RANGE'
+                        }
                     ],
                     Projection: {
                         ProjectionType: 'ALL',
