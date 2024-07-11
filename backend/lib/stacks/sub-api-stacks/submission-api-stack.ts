@@ -6,4 +6,5 @@ export class SubmissionApiStack extends NestedStack {
     constructor(scope: Construct, id: string, props: SubApiStackProps) {
         super(scope, id, props);
     }
+
 }

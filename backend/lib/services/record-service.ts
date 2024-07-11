@@ -1,7 +1,17 @@
 import { QuestionRecord } from '../models/question-record.js';
 import { Service } from './common/service.js';
+import { inject } from 'inversify';
+import { TYPES } from '../common/types.js';
+import { RecordRepository } from '../repositories/record-repository.js';
 
-export class RecordService implements Service<QuestionRecord> {
+export interface RecordService extends Service<QuestionRecord> {}
+
+export class RecordServiceImpl implements RecordService {
+    private readonly repository: RecordRepository;
+
+    public constructor(@inject(TYPES.RecordRepository) repository: RecordRepository) {
+        this.repository = repository;
+    }
     async findOne(userId: string, questionId: string): Promise<QuestionRecord> {
         throw new Error('Method not implemented.');
     }

@@ -111,7 +111,7 @@ describe('Infra test', () => {
         userStackTemplate.resourceCountIs('AWS::Lambda::Function', 1);
         const envCapture = new Capture();
         userStackTemplate.hasResourceProperties('AWS::Lambda::Function', {
-            Handler: 'index.handler',
+            Handler: 'index.createUserHandler',
             Runtime: 'nodejs20.x',
             Environment: {
                 Variables: {

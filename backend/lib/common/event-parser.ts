@@ -29,7 +29,6 @@ export class EventParser {
     }
 
     public static async parseDTO<T extends object>(dto: new (...args: any[]) => T , body: string | null) {
-        console.log('see body', body);
         if (!body || typeof body !== 'object') {
             throw new EmptyRequestBodyError(
                 'Request body is empty, potentially due to middy failing parsing incoming event'
@@ -51,4 +50,39 @@ export class EventParser {
             }
         }
     }
+
+    public static parseSubmissionDetails(body: string | null) {
+        console.log("see body", body);
+        if (!body || typeof body !== 'object') {
+            throw new EmptyRequestBodyError(
+                'Request body is empty, potentially due to middy failing parsing incoming event'
+            );
+        }
+
+        try {
+            const parsedBody = body as Record<string, unknown>
+            return {
+                email: parsedBody.email,
+                questionId: (parsedBody.submissionDetails as SubmissionDetails).question.questionId,
+                submissionTime: parsedBody.submissionTime
+            }
+        } catch (error) {
+            if (error instanceof Error) {
+                throw new ParseUserError(
+                    "Failed to parse incoming event into the target object",
+                    error
+                );
+            } else {
+                throw new ParseUserError('Failed to parse incoming event into an object');
+            }
+        }
+    }
+}
+
+type Question = {
+    questionId: string;
+}
+
+type SubmissionDetails = {
+    question: Question
 }

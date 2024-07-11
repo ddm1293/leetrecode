@@ -1,5 +1,5 @@
 import { LambdaInterface } from '@aws-lambda-powertools/commons/lib/cjs/types';
-import { UserServiceImpl } from '../../services/user-service-impl.js';
+import { UserServiceImpl } from '../../services/user-service.js';
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../../common/types.js';
 import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from 'aws-lambda';

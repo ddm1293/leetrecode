@@ -1,7 +1,6 @@
 import { Item } from './common/item.js';
 
 export class QuestionRecord extends Item {
-    public recordId: string;
     public userId: string;
     public questionId: string;
     public latestSubmissionId: string;
@@ -14,7 +13,6 @@ export class QuestionRecord extends Item {
     public isArchived: boolean;
 
     constructor(
-        recordId: string,
         ownerId: string,
         questionId: string,
         latestSubmissionId: string,
@@ -27,7 +25,6 @@ export class QuestionRecord extends Item {
         isArchived: boolean,
     ) {
         super();
-        this.recordId = recordId;
         this.userId = ownerId;
         this.questionId = questionId;
         this.latestSubmissionId = latestSubmissionId;

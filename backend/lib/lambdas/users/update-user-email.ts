@@ -14,7 +14,7 @@ import { ErrorHandler } from '../../common/errors/error-handler.js';
 import { injectable, inject } from 'inversify';
 import { TYPES } from '../../common/types.js';
 import { container } from '../../common/inversify.config.js';
-import { UserServiceImpl } from '../../services/user-service-impl.js';
+import { UserServiceImpl } from '../../services/user-service.js';
 import { EventParser } from '../../common/event-parser.js';
 import { UpdateUserEmailDto } from '../../models/dto/update-user-email-dto.js';
 
