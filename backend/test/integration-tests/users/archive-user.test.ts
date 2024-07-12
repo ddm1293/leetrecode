@@ -5,7 +5,7 @@ import { setup, teardown } from '../../utils/setup.js';
 import { createMockEvent } from '../../utils/create-mock-event.js';
 import { createUserHandler } from '../../../lib/lambdas/users/create-user.js';
 import { Context } from 'aws-lambda';
-import { deleteUserHandler } from '../../../lib/lambdas/users/delete-user.js';
+import { archiveUserHandler } from '../../../lib/lambdas/users/archive-user.js';
 import { ErrorCode } from '../../../lib/common/errors/error-code.js';
 import { getUserHandler } from '../../../lib/lambdas/users/get-user.js';
 
@@ -59,7 +59,7 @@ describe('User CRUD test', () => {
             email: 'test@example.com',
         })
 
-        const res2 = await deleteUserHandler(mockDeleteEvent as never, {} as Context);
+        const res2 = await archiveUserHandler(mockDeleteEvent as never, {} as Context);
         expect(res2.statusCode).toBe(200);
 
         const res3 = await getUserHandler(mockDeleteEvent as never, {} as Context);
@@ -76,7 +76,7 @@ describe('User CRUD test', () => {
             email: 'test@example.com',
         })
 
-        const res = await deleteUserHandler(mockDeleteEvent as never, {} as Context);
+        const res = await archiveUserHandler(mockDeleteEvent as never, {} as Context);
         expect(res.statusCode).toBe(500)
         const parsedRes = JSON.parse(res.body);
         expect(parsedRes.errorCode).toBe(ErrorCode.DELETE_NON_EXISTENT_USER_ERROR)

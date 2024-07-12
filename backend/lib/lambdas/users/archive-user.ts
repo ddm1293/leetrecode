@@ -12,7 +12,7 @@ import httpHeaderNormalizer from '@middy/http-header-normalizer';
 import httpErrorHandler from '@middy/http-error-handler';
 
 @injectable()
-export class DeleteUserHandler implements LambdaInterface {
+export class ArchiveUserHandler implements LambdaInterface {
     private userService: UserServiceImpl;
 
     public constructor(@inject(TYPES.UserService) userService: UserServiceImpl) {
@@ -39,10 +39,10 @@ export class DeleteUserHandler implements LambdaInterface {
     }
 }
 
-const handlerInstance: DeleteUserHandler = container.resolve(DeleteUserHandler);
+const handlerInstance: ArchiveUserHandler = container.resolve(ArchiveUserHandler);
 const lambdaHandler = handlerInstance.handler.bind(handlerInstance);
 
-export const deleteUserHandler = middy()
+export const archiveUserHandler = middy()
     .use(httpHeaderNormalizer())
     .use(httpErrorHandler())
     .handler(lambdaHandler);

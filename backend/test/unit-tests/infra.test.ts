@@ -96,6 +96,7 @@ describe('Infra test', () => {
         })
         expect(capture.asString()).toContain('This service serves my API.')
 
+        console.log('see template', JSON.stringify(template, null, 2))
         template.hasResourceProperties('AWS::ApiGateway::Method', {
             HttpMethod: 'POST',
         })

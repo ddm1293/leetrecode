@@ -29,10 +29,7 @@ export class ApiStack extends Stack {
             table: props.tables['userTable'],
         });
 
-        this.submissionStack = new SubmissionApiStack(
-            this,
-            'SubmissionApiStack',
-            {
+        this.submissionStack = new SubmissionApiStack(this, 'SubmissionApiStack', {
                 api: restApi,
                 table: props.tables['userTable'],
             },

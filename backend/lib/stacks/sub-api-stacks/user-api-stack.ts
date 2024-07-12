@@ -30,9 +30,63 @@ export class UserApiStack extends NestedStack {
             },
         );
 
-        props.table.grantReadWriteData(createUserLambda);
+        const getUserLambda: NodejsFunction = new NodejsFunction(
+            this,
+            'GetUserLambda',
+            {
+                ...baseConfig,
+                entry: path.join(__dirname, '../../lambdas/users/get-user.ts'),
+                handler: 'getUserHandler'
+            },
+        );
 
-        const users = props.api.root.addResource('users');
-        users.addMethod('POST', new LambdaIntegration(createUserLambda));
+        const updateUserEmailLambda: NodejsFunction = new NodejsFunction(
+            this,
+            'UpdateUserEmailLambda',
+            {
+                ...baseConfig,
+                entry: path.join(__dirname, '../../lambdas/users/update-user-email.ts'),
+                handler: 'updateUserEmailHandler'
+            },
+        );
+
+        const updateUserPasswordLambda: NodejsFunction = new NodejsFunction(
+            this,
+            'UpdateUserPasswordLambda',
+            {
+                ...baseConfig,
+                entry: path.join(__dirname, '../../lambdas/users/update-user-password.ts'),
+                handler: 'updateUserPasswordHandler'
+            },
+        );
+
+        const archiveUserLambda: NodejsFunction = new NodejsFunction(
+            this,
+            'ArchiveUserLambda',
+            {
+                ...baseConfig,
+                entry: path.join(__dirname, '../../lambdas/users/archive-user.ts'),
+                handler: 'archiveUserHandler'
+            },
+        );
+
+        props.table.grantReadWriteData(createUserLambda);
+        props.table.grantReadWriteData(getUserLambda);
+        props.table.grantReadWriteData(updateUserEmailLambda);
+        props.table.grantReadWriteData(updateUserPasswordLambda);
+        props.table.grantReadWriteData(archiveUserLambda);
+
+        const user = props.api.root.addResource('user');
+        user.addMethod('POST', new LambdaIntegration(createUserLambda));
+        user.addMethod('GET', new LambdaIntegration(getUserLambda));
+
+        const updateUserEmail = user.addResource('updateUserEmail');
+        updateUserEmail.addMethod('PUT', new LambdaIntegration(updateUserEmailLambda));
+
+        const updateUserPassword = user.addResource('updateUserPassword');
+        updateUserPassword.addMethod('PUT', new LambdaIntegration(updateUserPasswordLambda));
+
+        const archiveUser = user.addResource('archive');
+        archiveUser.addMethod('PUT', new LambdaIntegration(archiveUserLambda));
     }
 }
