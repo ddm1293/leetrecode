@@ -1,11 +1,13 @@
-import { NestedStack } from 'aws-cdk-lib';
+import { CfnOutput, Fn, NestedStack } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { SubApiStackProps } from './common/sub-api-stack-props.js';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import path from 'path';
-import { LambdaIntegration } from 'aws-cdk-lib/aws-apigateway';
+import { AwsIntegration, LambdaIntegration } from 'aws-cdk-lib/aws-apigateway';
 import { fileURLToPath } from 'url';
+import { CreateRecordConstruct } from '../../constructs/create-record-construct.js';
+import { ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -86,5 +88,54 @@ export class RecordApiStack extends NestedStack {
 
         const archiveRecord = record.addResource('archive');
         archiveRecord.addMethod('PUT', new LambdaIntegration(archiveRecordLambda));
+
+        new CfnOutput(this, 'CheckRecordLambdaArn', {
+            value: checkRecordLambda.functionArn,
+            exportName: 'checkRecordLambdaArn'
+        })
+
+        new CfnOutput(this, 'CreateRecordLambdaArn', {
+            value: createRecordLambda.functionArn,
+            exportName: 'createRecordLambdaArn'
+        })
+
+        new CfnOutput(this, 'UpdateRecordLambdaArn', {
+            value: updateRecordLambda.functionArn,
+            exportName: 'updateRecordLambdaArn'
+        })
+
+        const stepFunctionConstruct = new CreateRecordConstruct(this, 'CreateRecordConstruct', {
+            checkRecordLambda: checkRecordLambda.functionArn,
+            addSubmissionLambda: Fn.importValue('CreateSubmissionLambdaArn'),
+            createRecordLambda: createRecordLambda.functionArn,
+            updateRecordLambda: updateRecordLambda.functionArn,
+        })
+
+        const apiGatewayRole = new Role(this, 'ApiGatewayStepFunctionsRole', {
+            assumedBy: new ServicePrincipal('apigateway.amazonaws.com'),
+            managedPolicies: [
+                ManagedPolicy.fromAwsManagedPolicyName('AWSStepFunctionsFullAccess'),
+            ],
+        });
+
+        const startStateMachineIntegration = new AwsIntegration({
+            service: 'states',
+            action: 'StartExecution',
+            options: {
+                credentialsRole: apiGatewayRole,
+                requestTemplates: {
+                    'application/json': `{
+                        "input": "$util.escapeJavaScript($input.body)",
+                        "stateMachineArn": "${stepFunctionConstruct.stateMachine.stateMachineArn}"
+                    }`,
+                },
+                integrationResponses: [{
+                    statusCode: '200',
+                }],
+            },
+        });
+
+        const stateMachineResource = props.api.root.addResource('startStateMachine');
+        stateMachineResource.addMethod('POST', startStateMachineIntegration);
     }
 }

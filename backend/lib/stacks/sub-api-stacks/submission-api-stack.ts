@@ -1,4 +1,4 @@
-import { NestedStack } from 'aws-cdk-lib';
+import { CfnOutput, NestedStack } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { SubApiStackProps } from './common/sub-api-stack-props.js';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
@@ -58,5 +58,11 @@ export class SubmissionApiStack extends NestedStack {
         submission.addMethod('POST', new LambdaIntegration(createSubmissionLambda));
         submission.addMethod('GET', new LambdaIntegration(getSubmissionLambda));
         submission.addMethod('PUT', new LambdaIntegration(archiveSubmissionLambda));
+
+        new CfnOutput(this, 'CreateSubmissionLambdaArn', {
+            value: createSubmissionLambda.functionArn,
+            exportName: 'createSubmissionLambdaArn'
+        })
+
     }
 }

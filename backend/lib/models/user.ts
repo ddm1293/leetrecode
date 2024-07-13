@@ -3,7 +3,7 @@ import { IsEmail } from 'class-validator';
 import { Expose } from 'class-transformer';
 import { Gsi1 } from './common/gsi.js';
 
-export class User extends Item {
+export class User extends Item implements Gsi1 {
     @IsEmail() @Expose() public email: string;
     @Expose() public password: string;
     @Expose() public isArchived: boolean;

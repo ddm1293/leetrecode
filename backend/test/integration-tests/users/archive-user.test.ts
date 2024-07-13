@@ -9,7 +9,6 @@ import { archiveUserHandler } from '../../../lib/lambdas/users/archive-user.js';
 import { ErrorCode } from '../../../lib/common/errors/error-code.js';
 import { getUserHandler } from '../../../lib/lambdas/users/get-user.js';
 
-
 const ddbClient = new DynamoDBClient({
     region: 'localhost',
     endpoint: 'http://localhost:8000'
