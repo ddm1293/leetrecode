@@ -18,7 +18,7 @@ import { EventParser } from '../../common/event-parser.js';
 import { RecordServiceImpl } from '../../services/record-service.js';
 
 @injectable()
-export class CreateRecord implements LambdaInterface {
+export class CreateRecordLambda implements LambdaInterface {
     private recordService: RecordServiceImpl;
 
     public constructor(@inject(TYPES.RecordService) recordService: RecordServiceImpl) {
@@ -35,7 +35,7 @@ export class CreateRecord implements LambdaInterface {
             console.log('see incomingBody', incomingBody);
 
             return ResponseManager.success(200, {
-                message: 'User created successfully',
+                message: 'Record created successfully',
             });
         } catch (error) {
             return ErrorHandler.handleError(error);
@@ -43,7 +43,7 @@ export class CreateRecord implements LambdaInterface {
     }
 }
 
-const handlerInstance: CreateRecord = container.resolve(CreateRecord)
+const handlerInstance: CreateRecordLambda = container.resolve(CreateRecordLambda)
 const lambdaHandler = handlerInstance.handler.bind(handlerInstance);
 
 export const createRecordHandler = middy()
