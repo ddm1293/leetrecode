@@ -1,6 +1,5 @@
-import { NestedStack } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { SubApiStackProps } from './common/sub-api-stack-props.js';
+import { ApiConstructProps } from './common/api-construct-props.js';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { LambdaIntegration } from 'aws-cdk-lib/aws-apigateway';
@@ -9,9 +8,9 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-export class UserApiStack extends NestedStack {
-    constructor(scope: Construct, id: string, props: SubApiStackProps) {
-        super(scope, id, props);
+export class UserApiConstruct extends Construct {
+    constructor(scope: Construct, id: string, props: ApiConstructProps) {
+        super(scope, id);
 
         const baseConfig = {
             runtime: Runtime.NODEJS_20_X,

@@ -1,7 +1,6 @@
-import { CfnOutput, NestedStack } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { SubApiStackProps } from './common/sub-api-stack-props.js';
-import { Runtime } from 'aws-cdk-lib/aws-lambda';
+import { ApiConstructProps } from './common/api-construct-props.js';
+import { IFunction, Runtime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -9,9 +8,11 @@ import { LambdaIntegration } from 'aws-cdk-lib/aws-apigateway';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-export class SubmissionApiStack extends NestedStack {
-    constructor(scope: Construct, id: string, props: SubApiStackProps) {
-        super(scope, id, props);
+export class SubmissionApiConstruct extends Construct {
+    public readonly createSubmissionLambda: IFunction;
+
+    constructor(scope: Construct, id: string, props: ApiConstructProps) {
+        super(scope, id);
 
         const baseConfig = {
             runtime: Runtime.NODEJS_20_X,
@@ -29,6 +30,7 @@ export class SubmissionApiStack extends NestedStack {
                 handler: 'createSubmissionHandler'
             },
         );
+        this.createSubmissionLambda = createSubmissionLambda;
 
         const getSubmissionLambda: NodejsFunction = new NodejsFunction(
             this,
@@ -58,11 +60,5 @@ export class SubmissionApiStack extends NestedStack {
         submission.addMethod('POST', new LambdaIntegration(createSubmissionLambda));
         submission.addMethod('GET', new LambdaIntegration(getSubmissionLambda));
         submission.addMethod('PUT', new LambdaIntegration(archiveSubmissionLambda));
-
-        new CfnOutput(this, 'CreateSubmissionLambdaArn', {
-            value: createSubmissionLambda.functionArn,
-            exportName: 'createSubmissionLambdaArn'
-        })
-
     }
 }

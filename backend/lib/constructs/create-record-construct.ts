@@ -5,10 +5,10 @@ import { LambdaInvoke } from 'aws-cdk-lib/aws-stepfunctions-tasks';
 import { Duration } from 'aws-cdk-lib';
 
 interface StepFunctionConstructProps {
-    checkRecordLambda: string;
-    addSubmissionLambda: string;
-    createRecordLambda: string;
-    updateRecordLambda: string;
+    checkRecordLambdaArn: string;
+    addSubmissionLambdaArn: string;
+    createRecordLambdaArn: string;
+    updateRecordLambdaArn: string;
 }
 
 export class CreateRecordConstruct extends Construct {
@@ -17,25 +17,40 @@ export class CreateRecordConstruct extends Construct {
     constructor(scope: Construct, id: string, props: StepFunctionConstructProps) {
         super(scope, id);
 
-        const checkRecordLambda = NodejsFunction.fromFunctionArn(
+        const checkRecordLambda = NodejsFunction.fromFunctionAttributes(
             this,
             'CheckRecordLambdaArn',
-            props.checkRecordLambda
+            {
+                functionArn: props.checkRecordLambdaArn,
+                sameEnvironment: true
+            }
         );
-        const addSubmissionLambda = NodejsFunction.fromFunctionArn(
+
+        const addSubmissionLambda = NodejsFunction.fromFunctionAttributes(
             this,
             'CreateSubmissionLambdaArn',
-            props.addSubmissionLambda
+            {
+                functionArn: props.addSubmissionLambdaArn,
+                sameEnvironment: true
+            }
         );
-        const createRecordLambda = NodejsFunction.fromFunctionArn(
+
+        const createRecordLambda = NodejsFunction.fromFunctionAttributes(
             this,
             'CreateRecordLambdaArn',
-            props.createRecordLambda
+            {
+                functionArn: props.createRecordLambdaArn,
+                sameEnvironment: true
+            }
         );
-        const updateRecordLambda = NodejsFunction.fromFunctionArn(
+
+        const updateRecordLambda = NodejsFunction.fromFunctionAttributes(
             this,
             'UpdateRecordLambdaArn',
-            props.updateRecordLambda
+            {
+                functionArn: props.updateRecordLambdaArn,
+                sameEnvironment: true
+            }
         );
 
         const checkRecordTask = new LambdaInvoke(this, 'CheckRecordTask',

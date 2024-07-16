@@ -1,7 +1,6 @@
-import { CfnOutput, Fn, NestedStack } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { SubApiStackProps } from './common/sub-api-stack-props.js';
-import { Runtime } from 'aws-cdk-lib/aws-lambda';
+import { ApiConstructProps } from './common/api-construct-props.js';
+import { IFunction, Runtime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import path from 'path';
 import { AwsIntegration, LambdaIntegration } from 'aws-cdk-lib/aws-apigateway';
@@ -9,11 +8,15 @@ import { fileURLToPath } from 'url';
 import { CreateRecordConstruct } from '../../constructs/create-record-construct.js';
 import { ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 
+interface RecordApiConstructProps extends ApiConstructProps {
+    createSubmissionLambda: IFunction;
+}
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-export class RecordApiStack extends NestedStack {
-    constructor(scope: Construct, id: string, props: SubApiStackProps) {
-        super(scope, id, props);
+export class RecordApiConstruct extends Construct {
+    constructor(scope: Construct, id: string, props: RecordApiConstructProps) {
+        super(scope, id);
 
         const baseConfig = {
             runtime: Runtime.NODEJS_20_X,
@@ -89,26 +92,11 @@ export class RecordApiStack extends NestedStack {
         const archiveRecord = record.addResource('archive');
         archiveRecord.addMethod('PUT', new LambdaIntegration(archiveRecordLambda));
 
-        new CfnOutput(this, 'CheckRecordLambdaArn', {
-            value: checkRecordLambda.functionArn,
-            exportName: 'checkRecordLambdaArn'
-        })
-
-        new CfnOutput(this, 'CreateRecordLambdaArn', {
-            value: createRecordLambda.functionArn,
-            exportName: 'createRecordLambdaArn'
-        })
-
-        new CfnOutput(this, 'UpdateRecordLambdaArn', {
-            value: updateRecordLambda.functionArn,
-            exportName: 'updateRecordLambdaArn'
-        })
-
         const stepFunctionConstruct = new CreateRecordConstruct(this, 'CreateRecordConstruct', {
-            checkRecordLambda: checkRecordLambda.functionArn,
-            addSubmissionLambda: Fn.importValue('CreateSubmissionLambdaArn'),
-            createRecordLambda: createRecordLambda.functionArn,
-            updateRecordLambda: updateRecordLambda.functionArn,
+            checkRecordLambdaArn: checkRecordLambda.functionArn,
+            addSubmissionLambdaArn: props.createSubmissionLambda.functionArn,
+            createRecordLambdaArn: createRecordLambda.functionArn,
+            updateRecordLambdaArn: updateRecordLambda.functionArn,
         })
 
         const apiGatewayRole = new Role(this, 'ApiGatewayStepFunctionsRole', {
