@@ -7,9 +7,6 @@ import { ErrorHandler } from '../../common/errors/error-handler.js';
 import { ResponseManager } from '../../common/response-manager.js';
 import { EmptyPathParamsError } from '../../common/errors/general-errors.js';
 import { container } from '../../common/inversify.config';
-import middy from '@middy/core';
-import httpHeaderNormalizer from '@middy/http-header-normalizer';
-import httpErrorHandler from '@middy/http-error-handler';
 
 @injectable()
 export class ArchiveUserHandler implements LambdaInterface {
@@ -40,9 +37,4 @@ export class ArchiveUserHandler implements LambdaInterface {
 }
 
 const handlerInstance: ArchiveUserHandler = container.resolve(ArchiveUserHandler);
-const lambdaHandler = handlerInstance.handler.bind(handlerInstance);
-
-export const archiveUserHandler = middy()
-    .use(httpHeaderNormalizer())
-    .use(httpErrorHandler())
-    .handler(lambdaHandler);
+export const archiveUserHandler = handlerInstance.handler.bind(handlerInstance);

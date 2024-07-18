@@ -6,10 +6,6 @@ import {
     Context,
 } from 'aws-lambda';
 import { ResponseManager } from '../../common/response-manager.js';
-import middy from '@middy/core';
-import httpErrorHandler from '@middy/http-error-handler';
-import httpHeaderNormalizer from '@middy/http-header-normalizer';
-import httpJsonBodyParser from '@middy/http-json-body-parser';
 import { User } from '../../models/user.js';
 import { ErrorHandler } from '../../common/errors/error-handler.js';
 import { injectable, inject } from 'inversify';
@@ -31,6 +27,7 @@ export class CreateUserHandler implements LambdaInterface {
         context: Context,
     ): Promise<APIGatewayProxyResult> {
         try {
+            console.log("see event", event)
             // TODO: what if the event.body is not a proper user?
             const user: User = await EventParser.parse(User, event.body);
 
@@ -46,11 +43,5 @@ export class CreateUserHandler implements LambdaInterface {
     }
 }
 
-const handlerInstance: CreateUserHandler = container.resolve(CreateUserHandler)
-const lambdaHandler = handlerInstance.handler.bind(handlerInstance);
-
-export const createUserHandler = middy()
-    .use(httpHeaderNormalizer())
-    .use(httpJsonBodyParser())
-    .use(httpErrorHandler())
-    .handler(lambdaHandler);
+const handlerInstance: CreateUserHandler = container.resolve(CreateUserHandler);
+export const createUserHandler = handlerInstance.handler.bind(handlerInstance);

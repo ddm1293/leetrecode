@@ -6,10 +6,6 @@ import {
     Context,
 } from 'aws-lambda';
 import { ResponseManager } from '../../common/response-manager.js';
-import middy from '@middy/core';
-import httpErrorHandler from '@middy/http-error-handler';
-import httpHeaderNormalizer from '@middy/http-header-normalizer';
-import httpJsonBodyParser from '@middy/http-json-body-parser';
 import { ErrorHandler } from '../../common/errors/error-handler.js';
 import { injectable, inject } from 'inversify';
 import { TYPES } from '../../common/types.js';
@@ -43,10 +39,4 @@ export class GetTodayReviewsLambda implements LambdaInterface {
 }
 
 const handlerInstance: GetTodayReviewsLambda = container.resolve(GetTodayReviewsLambda)
-const lambdaHandler = handlerInstance.handler.bind(handlerInstance);
-
-export const getTodayReviewsLambdaHandler = middy()
-    .use(httpHeaderNormalizer())
-    .use(httpJsonBodyParser())
-    .use(httpErrorHandler())
-    .handler(lambdaHandler);
+export const getTodayReviewsLambdaHandler = handlerInstance.handler.bind(handlerInstance);

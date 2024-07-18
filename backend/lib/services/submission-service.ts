@@ -1,11 +1,12 @@
 import { Service } from './common/service.js';
 import { Submission } from '../models/submission.js';
 import { SubmissionRepository } from '../repositories/submission-repository.js';
-import { inject } from 'inversify';
+import { inject, injectable } from 'inversify';
 import { TYPES } from '../common/types.js';
 
 export interface SubmissionService extends Service<Submission> {}
 
+@injectable()
 export class SubmissionServiceImpl implements SubmissionService {
     private readonly repository: SubmissionRepository;
 

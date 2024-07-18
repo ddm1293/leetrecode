@@ -1,11 +1,12 @@
 import { QuestionRecord } from '../models/question-record.js';
 import { Service } from './common/service.js';
-import { inject } from 'inversify';
+import { inject, injectable } from 'inversify';
 import { TYPES } from '../common/types.js';
 import { RecordRepository } from '../repositories/record-repository.js';
 
 export interface RecordService extends Service<QuestionRecord> {}
 
+@injectable()
 export class RecordServiceImpl implements RecordService {
     private readonly repository: RecordRepository;
 

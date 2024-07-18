@@ -12,3 +12,9 @@ export class EmptyPathParamsError extends BaseError {
         super('EmptyPathParamsError', message, ErrorCode.EMPTY_PATH_PARAMS_ERROR, originalError);
     }
 }
+
+export class ParseJsonError extends BaseError {
+    constructor(message: string, originalError?: Error) {
+        super('ParseJsonError', message, ErrorCode.PARSE_JSON_ERROR, originalError);
+    }
+}

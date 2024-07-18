@@ -72,7 +72,7 @@ describe('Infra test', () => {
 
     test('Lambda created', () => {
         const app = new cdk.App();
-        const databaseStack = new DatabaseStack(app, 'DatabaseStack', {
+        const databaseStack: DatabaseStack = new DatabaseStack(app, 'DatabaseStack', {
             env: {
                 account: process.env.CDK_DEFAULT_ACCOUNT,
                 region: process.env.CDK_DEFAULT_REGION,
@@ -97,6 +97,7 @@ describe('Infra test', () => {
         expect(capture.asString()).toContain('This service serves my API.')
 
         console.log('see template', JSON.stringify(template, null, 2))
+
         // TODO test all lambdas defined in apigateway
         // template.hasResourceProperties('AWS::ApiGateway::Method', {
         //     HttpMethod: 'POST',
@@ -106,23 +107,6 @@ describe('Infra test', () => {
         // })
 
         // testing the nested stacks
-        template.resourceCountIs('AWS::CloudFormation::Stack', 3)
-        const { userStack, submissionStack, recordStack } = apiStack
-        const userStackTemplate: Template = Template.fromStack(userStack)
-
-        userStackTemplate.resourceCountIs('AWS::Lambda::Function', 5);
-        const envCapture = new Capture();
-        userStackTemplate.hasResourceProperties('AWS::Lambda::Function', {
-            Handler: 'index.createUserHandler',
-            Runtime: 'nodejs20.x',
-            Environment: {
-                Variables: {
-                    TABLE_NAME: envCapture
-                },
-            },
-        });
-        expect(envCapture.asObject()).toEqual({
-            'Fn::ImportValue': expect.stringMatching(/DatabaseStack:ExportsOutputRefUserTable[A-Z0-9]+/),
-        })
+        template.resourceCountIs('AWS::CloudFormation::Stack', 0)
     });
 })

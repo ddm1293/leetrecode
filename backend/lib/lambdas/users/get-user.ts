@@ -7,9 +7,6 @@ import { ErrorHandler } from '../../common/errors/error-handler.js';
 import { ResponseManager } from '../../common/response-manager.js';
 import { EmptyPathParamsError } from '../../common/errors/general-errors.js';
 import { container } from '../../common/inversify.config';
-import middy from '@middy/core';
-import httpHeaderNormalizer from '@middy/http-header-normalizer';
-import httpErrorHandler from '@middy/http-error-handler';
 
 @injectable()
 export class GetUserHandler implements LambdaInterface {
@@ -41,9 +38,4 @@ export class GetUserHandler implements LambdaInterface {
 }
 
 const handlerInstance: GetUserHandler = container.resolve(GetUserHandler);
-const lambdaHandler = handlerInstance.handler.bind(handlerInstance);
-
-export const getUserHandler = middy()
-    .use(httpHeaderNormalizer())
-    .use(httpErrorHandler())
-    .handler(lambdaHandler);
+export const getUserHandler = handlerInstance.handler.bind(handlerInstance);

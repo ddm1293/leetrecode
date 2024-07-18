@@ -1,9 +1,11 @@
 import { EmailHasBeenRegisteredError, FindUserError, IdenticalPasswordError, UpdateUserError } from './user-errors';
+import { ParseJsonError } from './general-errors';
 
 export enum ErrorCode {
     // General Error
     EMPTY_REQUEST_BODY_ERROR = 101,
     EMPTY_PATH_PARAMS_ERROR = 102,
+    PARSE_JSON_ERROR = 103,
 
     // User Error
     PARSE_USER_ERROR = 201,
