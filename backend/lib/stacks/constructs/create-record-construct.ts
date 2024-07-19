@@ -1,8 +1,15 @@
 import { Construct } from 'constructs';
-import { Choice, Condition, DefinitionBody, StateMachine } from 'aws-cdk-lib/aws-stepfunctions';
+import {
+    Choice,
+    Condition,
+    DefinitionBody, LogLevel,
+    StateMachine,
+    StateMachineType,
+} from 'aws-cdk-lib/aws-stepfunctions';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { LambdaInvoke } from 'aws-cdk-lib/aws-stepfunctions-tasks';
 import { Duration } from 'aws-cdk-lib';
+import { LogGroup } from 'aws-cdk-lib/aws-logs';
 
 interface StepFunctionConstructProps {
     checkRecordLambdaArn: string;
@@ -94,7 +101,11 @@ export class CreateRecordConstruct extends Construct {
 
         this.stateMachine = new StateMachine(this, 'CreateRecordStateMachine', {
             definitionBody: DefinitionBody.fromChainable(definition),
-            timeout: Duration.minutes(5),
+            stateMachineType: StateMachineType.EXPRESS,
+            logs: {
+                destination: new LogGroup(this, 'MyStepFunctionLogGroup'),
+                level: LogLevel.ALL,
+            }
         });
 
         checkRecordLambda.grantInvoke(this.stateMachine.role);

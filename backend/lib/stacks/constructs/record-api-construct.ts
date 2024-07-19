@@ -3,9 +3,9 @@ import { ApiConstructProps } from './common/api-construct-props.js';
 import { IFunction, Runtime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import path from 'path';
-import { AwsIntegration, LambdaIntegration } from 'aws-cdk-lib/aws-apigateway';
+import { LambdaIntegration, StepFunctionsIntegration, } from 'aws-cdk-lib/aws-apigateway';
 import { fileURLToPath } from 'url';
-import { CreateRecordConstruct } from '../../constructs/create-record-construct.js';
+import { CreateRecordConstruct } from './create-record-construct.js';
 import { ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 
 interface RecordApiConstructProps extends ApiConstructProps {
@@ -106,24 +106,12 @@ export class RecordApiConstruct extends Construct {
             ],
         });
 
-        const startStateMachineIntegration = new AwsIntegration({
-            service: 'states',
-            action: 'StartExecution',
-            options: {
-                credentialsRole: apiGatewayRole,
-                requestTemplates: {
-                    'application/json': `{
-                        "input": "$util.escapeJavaScript($input.body)",
-                        "stateMachineArn": "${stepFunctionConstruct.stateMachine.stateMachineArn}"
-                    }`,
-                },
-                integrationResponses: [{
-                    statusCode: '200',
-                }],
-            },
-        });
-
         const stateMachineResource = props.api.root.addResource('startStateMachine');
-        stateMachineResource.addMethod('POST', startStateMachineIntegration);
+        stateMachineResource.addMethod('POST', StepFunctionsIntegration.startExecution(
+            stepFunctionConstruct.stateMachine,
+            {
+                credentialsRole: apiGatewayRole
+            }
+        ));
     }
 }

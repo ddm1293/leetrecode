@@ -14,12 +14,17 @@ export class DynamoDBClientManager {
     public _client: DynamoDBDocumentClient;
 
     constructor() {
+        console.log('see isLocal: ', isLocal);
         this._client = DynamoDBDocumentClient.from(
             new DynamoDBClient({
-                region: isLocal
-                    ? 'localhost'
-                    : process.env.CDK_DEFAULT_REGION,
-                endpoint: isSamLocal ? 'http://host.docker.internal:8000' : isLocal ? 'http://localhost:8000' : undefined,
+                // region: isLocal
+                //     ? 'localhost'
+                //     : process.env.CDK_DEFAULT_REGION,
+                // endpoint: isSamLocal ?
+                //     'http://host.docker.internal:8000' :
+                //     isLocal ? 'http://localhost:8000' : 'https://dynamodb.us-west-2.amazonaws.com',
+                region: 'us-west-2',
+                endpoint: 'https://dynamodb.us-west-2.amazonaws.com'
             }),
         );
     }
