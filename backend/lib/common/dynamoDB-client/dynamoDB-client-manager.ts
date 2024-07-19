@@ -14,7 +14,6 @@ export class DynamoDBClientManager {
     public _client: DynamoDBDocumentClient;
 
     constructor() {
-        console.log('see isLocal: ', isLocal);
         this._client = DynamoDBDocumentClient.from(
             new DynamoDBClient({
                 // region: isLocal

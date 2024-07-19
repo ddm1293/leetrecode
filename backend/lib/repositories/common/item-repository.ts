@@ -4,16 +4,18 @@ import { Item, Key } from '../../models/common/item.js';
 import {
     DeleteCommand,
     DynamoDBDocumentClient,
-    GetCommand,
+    GetCommand, GetCommandOutput,
     PutCommand,
     UpdateCommand,
 } from '@aws-sdk/lib-dynamodb';
 import { Repository } from './repository.js';
 import { inject, injectable } from 'inversify';
 import { ItemTransformer } from '../../models/common/item-transformer.js';
+import { User } from '../../models/user';
+import { FindItemError, ParseJsonError } from '../../common/errors/general-errors';
 
 @injectable()
-export class ItemRepository implements Repository {
+export class ItemRepository<T extends Item> implements Repository<T> {
     protected client: DynamoDBDocumentClient;
 
     constructor(@inject(DynamoDBClientManager) DBClient: DynamoDBClientManager) {
@@ -29,15 +31,23 @@ export class ItemRepository implements Repository {
         );
     }
 
-    async get(pk: string, tableName: string, sk?: string): Promise<Record<string, unknown> | null> {
-        const key = sk ? { PK: pk, SK: sk } : { PK: pk };
-        const item = await this.client.send(
-            new GetCommand({
-                TableName: tableName,
-                Key: key,
-            }),
-        );
-        return item.Item || null;
+    async get(tableName: string, className: new (...args: any[]) => T, pk: string, sk?: string): Promise<T | null> {
+        try {
+            const key = sk ? { PK: pk, SK: sk } : { PK: pk };
+            const item: GetCommandOutput = await this.client.send(
+                new GetCommand({
+                    TableName: tableName,
+                    Key: key,
+                }),
+            );
+
+            if (item.Item) {
+                return ItemTransformer.deserialize(className, item.Item);
+            }
+            return null;
+        } catch (error) {
+            throw new FindItemError(`Failed to call get method: ${error}`);
+        }
     }
 
     async delete(pk: string, tableName: string, sk?: string): Promise<void> {

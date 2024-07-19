@@ -1,16 +1,17 @@
 import { Item } from './common/item.js';
+import { Expose } from 'class-transformer';
 
 export class QuestionRecord extends Item {
-    public userId: string;
-    public questionId: string;
-    public latestSubmissionId: string;
-    public lastReviewDate: Date;
-    public nextReviewDate: Date;
-    public notes: string[];
-    public submissionCount: number;
-    public createdAt: Date;
-    public updatedAt: Date;
-    public isArchived: boolean;
+    @Expose() public userId: string;
+    @Expose() public questionId: string;
+    @Expose() public latestSubmissionId: string;
+    @Expose() public lastReviewDate: Date;
+    @Expose() public nextReviewDate: Date;
+    @Expose() public notes: string[];
+    @Expose() public submissionCount: number;
+    @Expose() public createdAt: Date;
+    @Expose() public updatedAt: Date;
+    @Expose() public isArchived: boolean;
 
     constructor(
         ownerId: string,

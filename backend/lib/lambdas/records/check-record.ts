@@ -12,6 +12,7 @@ import { TYPES } from '../../common/types.js';
 import { container } from '../../common/inversify.config.js';
 import { EventParser } from '../../common/event-parser.js';
 import { RecordServiceImpl } from '../../services/record-service.js';
+import { CreateRecordDto } from '../../models/dto/create-record-dto';
 
 @injectable()
 export class CheckRecordLambda implements LambdaInterface {
@@ -22,15 +23,18 @@ export class CheckRecordLambda implements LambdaInterface {
     }
 
     public async handler(
-        event: APIGatewayProxyEvent,
+        event: unknown,
         context: Context,
     ): Promise<APIGatewayProxyResult> {
         try {
-            console.log('see incomingBody', JSON.stringify(event, null, 2));
-            console.log('see context: ', JSON.stringify(context, null, 2));
+            const dto: CreateRecordDto = await EventParser.parseCreateRecordDTO(event);
+            const email = dto.email;
+            const questionId = dto.submissionDetails.question.questionId;
+            const checkRecord = await this.recordService.checkRecord('userTable', email, questionId);
 
             return ResponseManager.success(200, {
-                message: 'User created successfully',
+                message: `Record exists? ${checkRecord}`,
+                boolean: checkRecord
             });
         } catch (error) {
             return ErrorHandler.handleError(error);

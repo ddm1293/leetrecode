@@ -8,7 +8,7 @@ import { FindUserError } from '../common/errors/user-errors.js';
 import { Key } from '../models/common/item.js';
 
 @injectable()
-export class UserRepository extends ItemRepository {
+export class UserRepository extends ItemRepository<User> {
     constructor(@inject(DynamoDBClientManager) DBClient: DynamoDBClientManager) {
         super(DBClient);
     }

@@ -18,3 +18,9 @@ export class ParseJsonError extends BaseError {
         super('ParseJsonError', message, ErrorCode.PARSE_JSON_ERROR, originalError);
     }
 }
+
+export class FindItemError extends BaseError {
+    constructor(message: string, originalError?: Error) {
+        super('FindItemError', message, ErrorCode.FIND_ITEM_ERROR, originalError);
+    }
+}

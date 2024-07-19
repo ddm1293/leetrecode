@@ -26,9 +26,6 @@ export class CreateRecordLambda implements LambdaInterface {
         context: Context,
     ): Promise<APIGatewayProxyResult> {
         try {
-            const incomingBody = EventParser.parseSubmissionDetails(event.body);
-
-            console.log('see incomingBody', incomingBody);
 
             return ResponseManager.success(200, {
                 message: 'Record created successfully',

@@ -13,8 +13,11 @@ export class RecordServiceImpl implements RecordService {
     public constructor(@inject(TYPES.RecordRepository) repository: RecordRepository) {
         this.repository = repository;
     }
-    async findOne(userId: string, questionId: string): Promise<QuestionRecord> {
-        throw new Error('Method not implemented.');
+    async findOne(tableName: string, userId: string, questionId: string): Promise<QuestionRecord | null> {
+        return this.repository.get(tableName, QuestionRecord, userId, questionId);
+    }
+    async findRecordByEmail(tableName:string, email: string, questionId: string): Promise<QuestionRecord | null> {
+        return this.repository.findRecordByEmail(tableName, email, questionId);
     }
     async findAllActive(userId: string): Promise<QuestionRecord[]> {
         throw new Error('Method not implemented.');
@@ -39,5 +42,9 @@ export class RecordServiceImpl implements RecordService {
     }
     async activateMany(userId: string, questionIds: string[]): Promise<void> {
         throw new Error('Method not implemented.');
+    }
+    async checkRecord(tableName: string, email :string, questionId: string): Promise<boolean> {
+        const checkRecord = await this.repository.findRecordByEmail(tableName, email, questionId);
+        return checkRecord != null;
     }
 }
