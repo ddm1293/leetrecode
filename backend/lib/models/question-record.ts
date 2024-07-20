@@ -3,6 +3,7 @@ import { Expose } from 'class-transformer';
 
 export class QuestionRecord extends Item {
     @Expose() public userId: string;
+    @Expose() public email: string;
     @Expose() public questionId: string;
     @Expose() public latestSubmissionId: string;
     @Expose() public lastReviewDate: Date;
@@ -43,5 +44,13 @@ export class QuestionRecord extends Item {
     }
     get sk(): string {
         return `RECORD#${this.questionId}`;
+    }
+
+    public gsi1_pk(): string {
+        return this.email;
+    }
+
+    public gsi1_sk(): string {
+        return this.questionId;
     }
 }

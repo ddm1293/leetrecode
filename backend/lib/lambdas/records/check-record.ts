@@ -1,12 +1,6 @@
 import 'reflect-metadata';
 import { LambdaInterface } from '@aws-lambda-powertools/commons/lib/cjs/types';
-import {
-    APIGatewayProxyEvent,
-    APIGatewayProxyResult,
-    Context,
-} from 'aws-lambda';
-import { ResponseManager } from '../../common/response-manager.js';
-import { ErrorHandler } from '../../common/errors/error-handler.js';
+import { Context } from 'aws-lambda';
 import { injectable, inject } from 'inversify';
 import { TYPES } from '../../common/types.js';
 import { container } from '../../common/inversify.config.js';
@@ -25,19 +19,20 @@ export class CheckRecordLambda implements LambdaInterface {
     public async handler(
         event: unknown,
         context: Context,
-    ): Promise<APIGatewayProxyResult> {
+    ): Promise<Record<string, unknown>> {
         try {
             const dto: CreateRecordDto = await EventParser.parseCreateRecordDTO(event);
             const email = dto.email;
             const questionId = dto.submissionDetails.question.questionId;
             const checkRecord = await this.recordService.checkRecord('userTable', email, questionId);
 
-            return ResponseManager.success(200, {
-                message: `Record exists? ${checkRecord}`,
-                boolean: checkRecord
-            });
+            return {
+                recordExists: checkRecord
+            };
         } catch (error) {
-            return ErrorHandler.handleError(error);
+            return {
+                error: error
+            }
         }
     }
 }

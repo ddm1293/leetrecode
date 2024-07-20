@@ -2,9 +2,9 @@ import { Construct } from 'constructs';
 import {
     Choice,
     Condition,
-    DefinitionBody, LogLevel,
+    DefinitionBody, LogLevel, Pass,
     StateMachine,
-    StateMachineType,
+    StateMachineType, TaskInput,
 } from 'aws-cdk-lib/aws-stepfunctions';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { LambdaInvoke } from 'aws-cdk-lib/aws-stepfunctions-tasks';
@@ -63,13 +63,18 @@ export class CreateRecordConstruct extends Construct {
         const checkRecordTask = new LambdaInvoke(this, 'CheckRecordTask',
             {
                 lambdaFunction: checkRecordLambda,
-                outputPath: '$.Payload',
+                resultSelector: {
+                    'recordExists.$': '$.Payload.recordExists'
+                },
+                resultPath: '$.checkRecordResult',
+                outputPath: '$',
             }
         );
 
         const addSubmissionTask = new LambdaInvoke(this, 'AddSubmissionTask',
             {
                 lambdaFunction: addSubmissionLambda,
+                inputPath: '$',
                 outputPath: '$.Payload',
             }
         );
@@ -77,13 +82,19 @@ export class CreateRecordConstruct extends Construct {
         const createRecordTask = new LambdaInvoke(this, 'CreateRecordTask',
             {
                 lambdaFunction: createRecordLambda,
-                outputPath: '$.Payload',
+                inputPath: '$',
+                payload: TaskInput.fromObject({
+                    "body.$": '$.body',
+                    'checkRecordResult.$': "$.checkRecordResult"
+                }),
+                outputPath: '$',
             }
         );
 
         const updateRecordTask = new LambdaInvoke(this, 'UpdateRecordTask',
             {
                 lambdaFunction: updateRecordLambda,
+                inputPath: '$',
                 outputPath: '$.Payload'
             }
         );
@@ -91,7 +102,7 @@ export class CreateRecordConstruct extends Construct {
         const definition = checkRecordTask
             .next(new Choice(this, 'RecordExistsChoice')
             .when(
-                Condition.booleanEquals('$.recordExists', true),
+                Condition.booleanEquals('$.checkRecordResult.recordExists', true),
                 addSubmissionTask
                     .next(updateRecordTask))
             .otherwise(
@@ -104,6 +115,7 @@ export class CreateRecordConstruct extends Construct {
             stateMachineType: StateMachineType.EXPRESS,
             logs: {
                 destination: new LogGroup(this, 'MyStepFunctionLogGroup'),
+                includeExecutionData: true,
                 level: LogLevel.ALL,
             }
         });

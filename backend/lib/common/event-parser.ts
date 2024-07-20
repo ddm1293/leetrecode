@@ -4,7 +4,7 @@ import { ItemTransformer } from '../models/common/item-transformer.js';
 import { Item } from '../models/common/item.js';
 import { plainToInstance } from 'class-transformer';
 import { validateOrReject } from 'class-validator';
-import { CreateRecordDto } from '../models/dto/create-record-dto';
+import { CreateRecordDto } from '../models/dto/create-record-dto.js';
 
 export class EventParser {
     public static async parse<T extends Item>(className: new (...args: any[]) => T,

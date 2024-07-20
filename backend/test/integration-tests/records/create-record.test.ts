@@ -4,8 +4,8 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { setup, teardown } from '../../utils/setup.js';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import { checkRecordHandler } from '../../../lib/lambdas/records/check-record';
 import { Context } from 'aws-lambda';
+import { checkRecordHandler } from '../../../lib/lambdas/records/check-record.js';
 
 const ddbClient = new DynamoDBClient({
     region: 'localhost',
