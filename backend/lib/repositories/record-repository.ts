@@ -1,12 +1,10 @@
 import { inject, injectable } from 'inversify';
 import { ItemRepository } from './common/item-repository.js';
 import { DynamoDBClientManager } from '../common/dynamoDB-client/dynamoDB-client-manager.js';
-import { QuestionRecord } from '../models/question-record';
+import { QuestionRecord } from '../models/question-record.js';
 import { QueryCommand } from '@aws-sdk/lib-dynamodb';
-import { ItemTransformer } from '../models/common/item-transformer';
-import { User } from '../models/user';
-import { FindUserError } from '../common/errors/user-errors';
-import { FindRecordError } from '../common/errors/record-errors';
+import { ItemTransformer } from '../models/common/item-transformer.js';
+import { FindRecordError } from '../common/errors/record-errors.js';
 
 @injectable()
 export class RecordRepository extends ItemRepository<QuestionRecord> {

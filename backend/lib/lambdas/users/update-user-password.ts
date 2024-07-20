@@ -27,7 +27,7 @@ export class UpdateUserPasswordHandler implements LambdaInterface {
         context: Context,
     ): Promise<APIGatewayProxyResult> {
         try {
-            const updateDTO = await EventParser.parseDTO(UpdateUserPasswordDto, event.body);
+            const updateDTO = await EventParser.parseDTOFromString(UpdateUserPasswordDto, event.body);
 
             await this.userService.updatePassword('userTable', updateDTO);
 

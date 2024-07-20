@@ -4,7 +4,7 @@ import { ItemTransformer } from '../models/common/item-transformer.js';
 import { Item } from '../models/common/item.js';
 import { plainToInstance } from 'class-transformer';
 import { validateOrReject } from 'class-validator';
-import { CreateRecordDto } from '../models/dto/create-record-dto.js';
+import { CheckRecordDto } from '../models/dto/check-record-dto.js';
 
 export class EventParser {
     public static async parse<T extends Item>(className: new (...args: any[]) => T,
@@ -37,7 +37,7 @@ export class EventParser {
         }
     }
 
-    public static async parseDTO<T extends object>(dto: new (...args: any[]) => T , body: string | null) {
+    public static async parseDTOFromString<T extends object>(dto: new (...args: any[]) => T , body: string | null) {
         if (!body) {
             throw new EmptyRequestBodyError('Request body is empty');
         }
@@ -66,7 +66,7 @@ export class EventParser {
         }
     }
 
-    public static async parseCreateRecordDTO(body: unknown): Promise<CreateRecordDto> {
+    public static async parseDTOFromObj<T extends object>(dtoClass: new (...args: any[]) => T, body: unknown): Promise<T> {
         if (!body || typeof body !== 'object') {
             throw new EmptyRequestBodyError('Request body is empty or the request event is not an object');
         }
@@ -74,7 +74,7 @@ export class EventParser {
         const bodyObj: Record<string, unknown> = body as Record<string, unknown>
 
         try {
-            const dto: CreateRecordDto = plainToInstance(CreateRecordDto, bodyObj.body, { excludeExtraneousValues: true });
+            const dto: T = plainToInstance(dtoClass, bodyObj.body, { excludeExtraneousValues: true });
             await validateOrReject(dto);
             return dto;
         } catch (error) {

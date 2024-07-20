@@ -5,38 +5,37 @@ export class QuestionRecord extends Item {
     @Expose() public userId: string;
     @Expose() public email: string;
     @Expose() public questionId: string;
-    @Expose() public latestSubmissionId: string;
-    @Expose() public lastReviewDate: Date;
-    @Expose() public nextReviewDate: Date;
+    @Expose() public latestSubmissionId: string  | null;
+    @Expose() public lastReviewDate: number;
+    @Expose() public nextReviewDate: number;
     @Expose() public notes: string[];
     @Expose() public submissionCount: number;
-    @Expose() public createdAt: Date;
-    @Expose() public updatedAt: Date;
+    @Expose() public createdAt: number;
+    @Expose() public updatedAt: number;
     @Expose() public isArchived: boolean;
 
     constructor(
-        ownerId: string,
+        userId: string,
+        email: string,
         questionId: string,
-        latestSubmissionId: string,
-        lastReviewDate: Date,
-        nextReviewDate: Date,
+        lastReviewDate: number,
+        nextReviewDate: number,
         notes: string[],
         submissionCount: number,
-        createdAt: Date,
-        updatedAt: Date,
-        isArchived: boolean,
+        createdAt: number,
+        updatedAt: number,
     ) {
         super();
-        this.userId = ownerId;
+        this.userId = userId;
+        this.email = email;
         this.questionId = questionId;
-        this.latestSubmissionId = latestSubmissionId;
         this.lastReviewDate = lastReviewDate;
         this.nextReviewDate = nextReviewDate;
         this.notes = notes;
         this.submissionCount = submissionCount;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.isArchived = isArchived;
+        this.isArchived = false;
     }
 
     get pk(): string {

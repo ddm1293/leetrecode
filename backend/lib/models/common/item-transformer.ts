@@ -7,8 +7,6 @@ import { hasGSI1 } from './gsi.js';
 
 export class ItemTransformer {
     public static serialize<T extends Item>(item: T): Record<string, unknown> {
-        // console.log('Own properties:', Object.keys(item));
-        // console.log('Prototype properties:', Object.getOwnPropertyNames(Object.getPrototypeOf(item)));
         const body = Object.fromEntries(
             Object.entries(instanceToPlain(item))
             .filter(value => value[1] !== undefined)

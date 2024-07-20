@@ -6,7 +6,7 @@ import { TYPES } from '../../common/types.js';
 import { container } from '../../common/inversify.config.js';
 import { EventParser } from '../../common/event-parser.js';
 import { RecordServiceImpl } from '../../services/record-service.js';
-import { CreateRecordDto } from '../../models/dto/create-record-dto';
+import { CheckRecordDto } from '../../models/dto/check-record-dto.js';
 
 @injectable()
 export class CheckRecordLambda implements LambdaInterface {
@@ -21,15 +21,12 @@ export class CheckRecordLambda implements LambdaInterface {
         context: Context,
     ): Promise<Record<string, unknown>> {
         try {
-            const dto: CreateRecordDto = await EventParser.parseCreateRecordDTO(event);
+            const dto: CheckRecordDto = await EventParser.parseDTOFromObj(CheckRecordDto, event);
             const email = dto.email;
             const questionId = dto.submissionDetails.question.questionId;
-            const checkRecord = await this.recordService.checkRecord('userTable', email, questionId);
-
-            return {
-                recordExists: checkRecord
-            };
+            return this.recordService.checkRecord('userTable', email, questionId);
         } catch (error) {
+            console.error(error)
             return {
                 error: error
             }

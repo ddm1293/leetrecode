@@ -3,6 +3,8 @@ import { Service } from './common/service.js';
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../common/types.js';
 import { RecordRepository } from '../repositories/record-repository.js';
+import { PersistUserError } from '../common/errors/user-errors';
+import { PersistRecordError } from '../common/errors/record-errors';
 
 export interface RecordService extends Service<QuestionRecord> {}
 
@@ -28,8 +30,14 @@ export class RecordServiceImpl implements RecordService {
     async update(id: string, data: QuestionRecord): Promise<void> {
         throw new Error('Method not implemented.');
     }
-    async add(tableName: string, item: QuestionRecord): Promise<QuestionRecord> {
-        throw new Error('Method not implemented.');
+    async add(tableName: string, record: QuestionRecord): Promise<QuestionRecord> {
+        try {
+            await this.repository.save(record, tableName);
+            return record;
+        } catch (error) {
+            console.error(error);
+            throw new PersistRecordError('Failed to save the user into DB')
+        }
     }
     async archive(userId: string): Promise<void> {
         throw new Error('Method not implemented.');
@@ -43,8 +51,11 @@ export class RecordServiceImpl implements RecordService {
     async activateMany(userId: string, questionIds: string[]): Promise<void> {
         throw new Error('Method not implemented.');
     }
-    async checkRecord(tableName: string, email :string, questionId: string): Promise<boolean> {
+    async checkRecord(tableName: string, email :string, questionId: string): Promise<Record<string, unknown>> {
         const checkRecord = await this.repository.findRecordByEmail(tableName, email, questionId);
-        return checkRecord != null;
+        return {
+            recordExists: checkRecord != null,
+            record: checkRecord
+        }
     }
 }

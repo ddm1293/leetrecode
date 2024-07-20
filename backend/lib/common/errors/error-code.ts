@@ -1,4 +1,4 @@
-import { FindRecordError } from './record-errors';
+import { FindRecordError, PersistRecordError } from './record-errors';
 
 export enum ErrorCode {
     // General Error
@@ -20,5 +20,6 @@ export enum ErrorCode {
     IDENTICAL_PASSWORD_ERROR = 210,
 
     // Record Error
-    FIND_RECORD_ERROR = 301
+    FIND_RECORD_ERROR = 301,
+    PERSIST_RECORD_ERROR = 302,
 }

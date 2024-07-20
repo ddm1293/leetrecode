@@ -29,8 +29,6 @@ describe('User CRUD test', () => {
         const mockEventString = await readFile(resolve('test/test-files/create-record-test.json'), { encoding: 'utf8' });
         const mockEventObj = JSON.parse(mockEventString);
         const res = await checkRecordHandler(mockEventObj, {} as Context);
-        expect(res.statusCode).toBe(200);
-        const body = JSON.parse(res.body);
-        expect(body.boolean).toBe(false);
+        expect(res.recordExists).toBe(false)
     });
 })

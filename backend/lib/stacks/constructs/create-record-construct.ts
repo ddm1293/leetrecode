@@ -64,7 +64,8 @@ export class CreateRecordConstruct extends Construct {
             {
                 lambdaFunction: checkRecordLambda,
                 resultSelector: {
-                    'recordExists.$': '$.Payload.recordExists'
+                    'recordExists.$': '$.Payload.recordExists',
+                    'record.$': '$.Payload.record',
                 },
                 resultPath: '$.checkRecordResult',
                 outputPath: '$',
@@ -84,9 +85,12 @@ export class CreateRecordConstruct extends Construct {
                 lambdaFunction: createRecordLambda,
                 inputPath: '$',
                 payload: TaskInput.fromObject({
-                    "body.$": '$.body',
-                    'checkRecordResult.$': "$.checkRecordResult"
+                    "body.$": 'States.JsonMerge($.body, $.checkRecordResult, false)',
                 }),
+                resultSelector: {
+                    'recordCreated.$': '$.Payload.recordCreated',
+                },
+                resultPath: '$.createRecordResult',
                 outputPath: '$',
             }
         );

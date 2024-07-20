@@ -27,7 +27,7 @@ export class UpdateUserEmailHandler implements LambdaInterface {
         context: Context,
     ): Promise<APIGatewayProxyResult> {
         try {
-            const updateDTO = await EventParser.parseDTO(UpdateUserEmailDto, event.body);
+            const updateDTO = await EventParser.parseDTOFromString(UpdateUserEmailDto, event.body);
 
             await this.userService.updateEmail('userTable', updateDTO);
 
