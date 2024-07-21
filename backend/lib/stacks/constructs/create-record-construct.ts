@@ -76,7 +76,7 @@ export class CreateRecordConstruct extends Construct {
             {
                 lambdaFunction: addSubmissionLambda,
                 inputPath: '$',
-                outputPath: '$.Payload',
+                outputPath: '$',
             }
         );
 

@@ -8,6 +8,8 @@ import { UserServiceImpl } from '../services/user-service.js';
 import { UserRepository } from '../repositories/user-repository.js';
 import { RecordService, RecordServiceImpl } from '../services/record-service.js';
 import { RecordRepository } from '../repositories/record-repository.js';
+import { SubmissionService, SubmissionServiceImpl } from '../services/submission-service.js';
+import { SubmissionRepository } from '../repositories/submission-repository.js';
 
 const container = new Container();
 container.bind<DynamoDBClientManager>(DynamoDBClientManager).toSelf();
@@ -16,5 +18,7 @@ container.bind<UserService>(TYPES.UserService).to(UserServiceImpl).inSingletonSc
 container.bind<UserRepository>(TYPES.UserRepository).to(UserRepository).inSingletonScope();
 container.bind<RecordService>(TYPES.RecordService).to(RecordServiceImpl).inSingletonScope();
 container.bind<RecordRepository>(TYPES.RecordRepository).to(RecordRepository).inSingletonScope();
+container.bind<SubmissionService>(TYPES.SubmissionService).to(SubmissionServiceImpl).inSingletonScope();
+container.bind<SubmissionRepository>(TYPES.SubmissionRepository).to(SubmissionRepository).inSingletonScope();
 
 export { container };

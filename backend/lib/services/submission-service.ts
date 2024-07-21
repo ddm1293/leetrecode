@@ -3,6 +3,7 @@ import { Submission } from '../models/submission.js';
 import { SubmissionRepository } from '../repositories/submission-repository.js';
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../common/types.js';
+import { PersistRecordError } from '../common/errors/record-errors';
 
 export interface SubmissionService extends Service<Submission> {}
 
@@ -20,8 +21,14 @@ export class SubmissionServiceImpl implements SubmissionService {
     update(userId: string, data: Submission): Promise<void> {
         throw new Error('Method not implemented.');
     }
-    add(tableName: string, item: Submission): Promise<Submission> {
-        throw new Error('Method not implemented.');
+    async add(tableName: string, submission: Submission): Promise<Submission> {
+        try {
+            await this.repository.save(submission, tableName);
+            return submission;
+        } catch (error) {
+            console.error(error);
+            throw new PersistRecordError('Failed to save the user into DB')
+        }
     }
     archive(tableName: string, key: string): Promise<void> {
         throw new Error('Method not implemented.');

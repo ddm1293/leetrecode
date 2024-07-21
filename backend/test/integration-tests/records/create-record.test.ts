@@ -6,6 +6,7 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { Context } from 'aws-lambda';
 import { checkRecordHandler } from '../../../lib/lambdas/records/check-record.js';
+import { createSubmissionHandler } from '../../../lib/lambdas/submissions/create-submission.js';
 
 const ddbClient = new DynamoDBClient({
     region: 'localhost',
@@ -30,5 +31,12 @@ describe('User CRUD test', () => {
         const mockEventObj = JSON.parse(mockEventString);
         const res = await checkRecordHandler(mockEventObj, {} as Context);
         expect(res.recordExists).toBe(false)
+    });
+
+    it('Test add a submission', async () => {
+        const mockEventString = await readFile(resolve('test/test-files/add-submission-test.json'), { encoding: 'utf8' });
+        const mockEventObj = JSON.parse(mockEventString);
+        const res = await createSubmissionHandler(mockEventObj, {} as Context);
+
     });
 })

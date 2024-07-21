@@ -1,9 +1,14 @@
 import { Expose } from 'class-transformer';
+import { ulid } from 'ulid';
 
 export abstract class Item {
     @Expose() public id: string;
     abstract get pk(): string;
     abstract get sk(): string;
+
+    protected constructor() {
+        this.id = ulid();
+    }
 
     public keys(): Key {
         return {

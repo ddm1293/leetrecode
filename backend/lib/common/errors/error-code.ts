@@ -1,4 +1,5 @@
 import { FindRecordError, PersistRecordError } from './record-errors';
+import { NullRecordInSubmissionDTOError } from './submission-error';
 
 export enum ErrorCode {
     // General Error
@@ -22,4 +23,7 @@ export enum ErrorCode {
     // Record Error
     FIND_RECORD_ERROR = 301,
     PERSIST_RECORD_ERROR = 302,
+
+    // Submission Error
+    NULL_RECORD_IN_SUBMISSION_DTO_ERROR = 401,
 }
