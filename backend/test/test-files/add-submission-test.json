@@ -1,7 +1,6 @@
 {
   "body": {
     "email": "test@example.com",
-    "timestamp": 1721499719,
     "submissionDetails": {
       "runtime": 1222,
       "runtimeDisplay": "264 ms",

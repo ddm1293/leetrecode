@@ -29,6 +29,7 @@ describe('User CRUD test', () => {
     it('Test check a record in local dynamoDB', async () => {
         const mockEventString = await readFile(resolve('test/test-files/create-record-test.json'), { encoding: 'utf8' });
         const mockEventObj = JSON.parse(mockEventString);
+        console.log('see obj: ', JSON.stringify(mockEventObj, null, 2));
         const res = await checkRecordHandler(mockEventObj, {} as Context);
         expect(res.recordExists).toBe(false)
     });
@@ -36,6 +37,7 @@ describe('User CRUD test', () => {
     it('Test add a submission', async () => {
         const mockEventString = await readFile(resolve('test/test-files/add-submission-test.json'), { encoding: 'utf8' });
         const mockEventObj = JSON.parse(mockEventString);
+        console.log('see obj: ', JSON.stringify(mockEventObj, null, 2));
         const res = await createSubmissionHandler(mockEventObj, {} as Context);
 
     });

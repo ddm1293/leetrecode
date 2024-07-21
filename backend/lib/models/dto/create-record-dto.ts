@@ -6,7 +6,6 @@ export class CreateRecordDto {
     @Expose() @IsNotEmpty() @IsEmail() email: string;
     @Expose() @IsNotEmpty() @Type(() => SubmissionDetailDto)
     submissionDetails: SubmissionDetailDto;
-    @Expose() @IsNotEmpty() timestamp: number;
     @Expose() @IsNotEmpty() recordExists: boolean;
 }
 

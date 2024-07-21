@@ -5,7 +5,6 @@ export class CheckRecordDto {
     @Expose() @IsNotEmpty() @IsEmail() email: string;
     @Expose() @IsNotEmpty() @Type(() => SubmissionDetailDto)
     submissionDetails: SubmissionDetailDto;
-    @Expose() @IsNotEmpty() timestamp: number;
 }
 
 export class SubmissionDetailDto {
