@@ -10,9 +10,6 @@ export class QuestionRecord extends Item {
     @Expose() public nextReviewDate: number;
     @Expose() public notes: string[];
     @Expose() public submissionCount: number;
-    @Expose() public createdAt: number;
-    @Expose() public updatedAt: number;
-    @Expose() public isArchived: boolean;
 
     constructor(
         userId: string,
@@ -22,8 +19,6 @@ export class QuestionRecord extends Item {
         nextReviewDate: number,
         notes: string[],
         submissionCount: number,
-        createdAt: number,
-        updatedAt: number,
     ) {
         super();
         this.userId = userId;
@@ -33,9 +28,6 @@ export class QuestionRecord extends Item {
         this.nextReviewDate = nextReviewDate;
         this.notes = notes;
         this.submissionCount = submissionCount;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.isArchived = false;
     }
 
     get pk(): string {

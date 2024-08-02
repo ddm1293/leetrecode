@@ -8,7 +8,6 @@ import {
 } from 'aws-cdk-lib/aws-stepfunctions';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { LambdaInvoke } from 'aws-cdk-lib/aws-stepfunctions-tasks';
-import { Duration } from 'aws-cdk-lib';
 import { LogGroup } from 'aws-cdk-lib/aws-logs';
 
 interface StepFunctionConstructProps {
@@ -76,6 +75,11 @@ export class CreateRecordConstruct extends Construct {
             {
                 lambdaFunction: addSubmissionLambda,
                 inputPath: '$',
+                resultSelector: {
+                    'record.$': '$.Payload.record',
+                    'submissionAdded.$': '$.Payload.submission',
+                },
+                resultPath: '$.AddSubmissionResult',
                 outputPath: '$',
             }
         );
@@ -99,7 +103,12 @@ export class CreateRecordConstruct extends Construct {
             {
                 lambdaFunction: updateRecordLambda,
                 inputPath: '$',
-                outputPath: '$.Payload'
+                resultSelector: {
+                    "body.$": "$.Payload",
+                    "statusCode.$": "$.StatusCode",
+                },
+                resultPath: '$.ModifiedPayload',
+                outputPath: '$.ModifiedPayload'
             }
         );
 

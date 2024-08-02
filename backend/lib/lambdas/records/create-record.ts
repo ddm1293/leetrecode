@@ -38,8 +38,6 @@ export class CreateRecordLambda implements LambdaInterface {
                 dto.submissionDetails.timestamp,
                 [],
                 1,
-                dto.submissionDetails.timestamp,
-                dto.submissionDetails.timestamp,
                 );
             const persistedRecord = await this.recordService.add('userTable', record);
 

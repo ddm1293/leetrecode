@@ -1,16 +1,9 @@
 import 'reflect-metadata';
 import { LambdaInterface } from '@aws-lambda-powertools/commons/lib/cjs/types';
-import {
-    APIGatewayProxyEvent,
-    APIGatewayProxyResult,
-    Context,
-} from 'aws-lambda';
-import { ResponseManager } from '../../common/response-manager.js';
-import { ErrorHandler } from '../../common/errors/error-handler.js';
+import { Context, } from 'aws-lambda';
 import { injectable, inject } from 'inversify';
 import { TYPES } from '../../common/types.js';
 import { container } from '../../common/inversify.config.js';
-import { EventParser } from '../../common/event-parser.js';
 import { RecordServiceImpl } from '../../services/record-service.js';
 
 @injectable()
@@ -22,17 +15,17 @@ export class UpdateRecordLambda implements LambdaInterface {
     }
 
     public async handler(
-        event: APIGatewayProxyEvent,
+        event: unknown,
         context: Context,
-    ): Promise<APIGatewayProxyResult> {
+    ): Promise<Record<string, unknown>> {
         try {
-            console.log('update record');
-
-            return ResponseManager.success(200, {
-                message: 'User created successfully',
-            });
+            console.log('update record, see event', event);
+            return  {
+                recordCreated: 'for now'
+            };
         } catch (error) {
-            return ErrorHandler.handleError(error);
+            console.error(error);
+            return { error: error }
         }
     }
 }

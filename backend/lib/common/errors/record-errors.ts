@@ -12,3 +12,9 @@ export class PersistRecordError extends BaseError {
         super('PersistRecordError', message, ErrorCode.PERSIST_RECORD_ERROR, originalError);
     }
 }
+
+export class RecordAlreadyExistsError extends BaseError {
+    constructor(message: string, originalError?: Error) {
+        super('RecordAlreadyExistsError', message, ErrorCode.RECORD_ALREADY_EXISTS_ERROR, originalError);
+    }
+}

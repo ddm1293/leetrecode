@@ -9,6 +9,7 @@ import { SubmissionServiceImpl } from '../../services/submission-service.js';
 import { Submission } from '../../models/submission.js';
 import { AddSubmissionDto } from '../../models/dto/add-submission-dto.js';
 import { NullRecordInSubmissionDTOError } from '../../common/errors/submission-error.js';
+import { QuestionRecord } from '../../models/question-record.js';
 
 @injectable()
 export class CreateSubmissionHandler implements LambdaInterface {
@@ -18,18 +19,23 @@ export class CreateSubmissionHandler implements LambdaInterface {
         this.submissionService = userService;
     }
 
-    private async parseSubmission(event: unknown, context: Context): Promise<Submission> {
+    private async parseRecord(event: unknown, context: Context): Promise<[AddSubmissionDto, QuestionRecord]> {
         const dto: AddSubmissionDto = await EventParser.parseAddSubmissionDTO(event);
-        console.log('see dto: ', JSON.stringify(dto, null, 2));
-        let submission: Submission;
+        let record: QuestionRecord;
         if (dto.record) {
-            submission = new Submission(dto.submissionDetails, dto.record)
+            record = dto.record;
         } else if (dto.recordCreated) {
-            submission = new Submission(dto.submissionDetails, dto.recordCreated)
+            record = dto.recordCreated;
         } else {
             throw new NullRecordInSubmissionDTOError('There is no not null record in incoming event');
         }
-        return submission;
+        return [dto, record];
+    }
+
+    private async parseSubmission(event: unknown, context: Context): Promise<[QuestionRecord, Submission]> {
+        const [dto, record] = await this.parseRecord(event, context);
+        const submission = new Submission(dto.submissionDetails, record)
+        return [record, submission]
     }
 
     public async handler(
@@ -37,11 +43,12 @@ export class CreateSubmissionHandler implements LambdaInterface {
         context: Context,
     ): Promise<Record<string, unknown>> {
         try {
-            const submission = await this.parseSubmission(event, context);
+            const [record, submission] = await this.parseSubmission(event, context);
             await this.submissionService.add('userTable', submission);
 
             return {
-                submission: submission
+                record: record,
+                submission: submission,
             };
         } catch (error) {
             console.error(error);

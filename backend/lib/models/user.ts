@@ -6,13 +6,11 @@ import { Gsi1 } from './common/gsi.js';
 export class User extends Item implements Gsi1 {
     @IsEmail() @Expose() public email: string;
     @Expose() public password: string;
-    @Expose() public isArchived: boolean;
 
     constructor(email: string, password: string) {
         super();
         this.email = email;
         this.password = password;
-        this.isArchived = false;
     }
 
     get pk(): string {

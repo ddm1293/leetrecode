@@ -3,8 +3,7 @@ import { Service } from './common/service.js';
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../common/types.js';
 import { RecordRepository } from '../repositories/record-repository.js';
-import { PersistUserError } from '../common/errors/user-errors';
-import { PersistRecordError } from '../common/errors/record-errors';
+import { PersistRecordError, RecordAlreadyExistsError } from '../common/errors/record-errors.js';
 
 export interface RecordService extends Service<QuestionRecord> {}
 
@@ -31,6 +30,10 @@ export class RecordServiceImpl implements RecordService {
         throw new Error('Method not implemented.');
     }
     async add(tableName: string, record: QuestionRecord): Promise<QuestionRecord> {
+        const checkRecord = await this.repository.findRecordByEmail(tableName, record.email, record.questionId);
+        if (checkRecord) {
+            throw new RecordAlreadyExistsError(`Record ${record.questionId} under user ${record.email} already exists`)
+        }
         try {
             await this.repository.save(record, tableName);
             return record;

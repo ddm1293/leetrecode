@@ -4,8 +4,6 @@ export class Note extends Item {
     public noteId: string;
     public title?: string;
     public content: string;
-    public createdAt: Date;
-    public updatedAt: Date;
     public noteType: string;
 
     constructor(
@@ -20,8 +18,6 @@ export class Note extends Item {
         this.noteId = noteId;
         this.title = title || '';
         this.content = content;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
         this.noteType = noteType;
     }
 
