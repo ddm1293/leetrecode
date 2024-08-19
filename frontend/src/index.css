@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  height: 100%;
+}
+
+div[id='root'] {
+  min-height: 100%;
+}
+
+pre > pre {
+  background: none !important;
+}
+
+pre {
+  @apply w-full;
+}
+
+/* width */
+::-webkit-scrollbar {
+  @apply hidden;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  @apply bg-zinc-400 rounded-md my-2 mx-2 opacity-30;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  @apply bg-zinc-600 transition opacity-50 rounded-md;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-zinc-600;
+}
