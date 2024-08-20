@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Card } from '../models/Card';
+import { Card } from '../../models/Card';
 import { TableAction } from '../../pages/Dashboard';
 import {
     Badge,

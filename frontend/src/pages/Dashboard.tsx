@@ -11,7 +11,7 @@ import {
     useColorModeValue, useDisclosure,
 } from '@chakra-ui/react';
 import DashboardBar from '../components/dashboard/DashboardBar';
-import { Card } from '../components/models/Card';
+import { Card } from '../models/Card';
 import QuestionTable from '../components/dashboard/QuestionTable';
 import PaginationControl from '../components/dashboard/PaginationControl';
 
