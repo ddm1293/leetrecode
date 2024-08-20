@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import {
     Box,
     Container,
@@ -11,6 +11,8 @@ import {
     useColorModeValue, useDisclosure,
 } from '@chakra-ui/react';
 import DashboardBar from '../components/dashboard/DashboardBar';
+import { Card } from '../components/models/Card';
+import QuestionTable from '../components/dashboard/QuestionTable';
 
 export enum TableAction {
     NORMAL,
@@ -27,8 +29,49 @@ const Dashboard = () => {
     const [onlyActive, setOnlyActive] = useState<boolean>(true);
     const [search, setSearch] = useState<string>("");
     const [selected, setSelected] = useState<string[]>([]);
+    const [order, setOrder] = useState(0);
+    const [orderCol, setOrderCol] = useState(4);
+    const [page, setPage] = useState<number>(0);
+    const [rowCount, setRowCount] = useState<number>(10);
+    const [questions, setQuestions] = useState<Card[]>([]);
+
+    const compareFn = useRef<(a: Card, b: Card) => number>((a, b) => 0);
 
     const containerBg = useColorModeValue("white", "gray.900");
+
+    const filteredData: Card[] = [];
+
+    const paginatedData: Card[] = useMemo(() => {
+        return filteredData.slice(page * rowCount, (page + 1) * rowCount);
+    }, [filteredData, page, rowCount]);
+
+    const handleSortTable = (col: number, order: number, compare: any) => {
+        compareFn.current = compare;
+        setOrderCol(col);
+        setOrder(order);
+    };
+
+    const updateCard = (id: string, newCard: Card) => {
+        console.log(id);
+        setQuestions(
+            questions.map((card) => {
+                if (card.id === id) {
+                    return newCard;
+                }
+                return card;
+            })
+        );
+    };
+
+    const appendSelected = (id: string) => {
+        setSelected((prevSelected) => [...prevSelected, id]);
+        console.log(`appending ${id}`);
+    };
+
+    const removeSelected = (id: string) => {
+        setSelected((prevSelected) => prevSelected.filter((s) => s !== id));
+        console.log(`removing ${id}`);
+    };
 
     return (
         <Flex direction="row" justify="center" pb={4} >
@@ -57,7 +100,19 @@ const Dashboard = () => {
                             onOnlyActiveChange={(onlyActive) => setOnlyActive(onlyActive)}
                         />
 
-
+                        <Box overflowX="auto">
+                            <QuestionTable
+                                order={order}
+                                orderCol={orderCol}
+                                cards={paginatedData}
+                                onSort={handleSortTable}
+                                setCard={updateCard}
+                                appendSelected={appendSelected}
+                                removeSelected={removeSelected}
+                                tableAction={action}
+                                selected={selected}
+                            />
+                        </Box>
 
 
                     </Stack>
