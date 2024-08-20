@@ -13,6 +13,7 @@ import {
 import DashboardBar from '../components/dashboard/DashboardBar';
 import { Card } from '../components/models/Card';
 import QuestionTable from '../components/dashboard/QuestionTable';
+import PaginationControl from '../components/dashboard/PaginationControl';
 
 export enum TableAction {
     NORMAL,
@@ -114,7 +115,13 @@ const Dashboard = () => {
                             />
                         </Box>
 
-
+                        <PaginationControl
+                            filteredData={filteredData}
+                            page={page}
+                            rowCount={rowCount}
+                            onRowCountChange={(n) => setRowCount(n)}
+                            onPageChange={(n: number) => setPage(n)}
+                        />
                     </Stack>
                 </Box>
             </Container>
