@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 import { ChevronDownIcon } from '@chakra-ui/icons';
-import { Card } from '../models/Card';
+import { Card } from '../../models/Card';
 
 interface PaginationControlProps {
     filteredData: Card[],
