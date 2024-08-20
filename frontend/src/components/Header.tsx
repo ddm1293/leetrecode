@@ -44,6 +44,15 @@ const Header = () => {
     const { toggleColorMode } = useColorMode();
     const navigate = useNavigate();
 
+    const handleClick = () => {
+        // if (user.status === "active") {
+        //     navigate("/logout");
+        // } else {
+        //     navigate("/login");
+        // }
+        navigate("/login");
+    };
+
     return (
         <Flex
             as="nav"
@@ -176,7 +185,7 @@ const Header = () => {
                             variant="solid"
                             w={{ base: "full", md: "auto" }}
                             colorScheme="green"
-                            // onClick={handleClick}
+                            onClick={handleClick}
                         >
                             {/*{user.status === "active" ? "Logout" : "Login"}*/}
                             Login
