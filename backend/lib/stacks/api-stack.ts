@@ -2,9 +2,9 @@ import { Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { ITable } from 'aws-cdk-lib/aws-dynamodb';
 import { RestApi } from 'aws-cdk-lib/aws-apigateway';
-import { UserApiConstruct } from './constructs/user-api-construct.js';
-import { SubmissionApiConstruct } from './constructs/submission-api-construct.js';
-import { RecordApiConstruct } from './constructs/record-api-construct.js';
+import { UserApiConstruct } from '../constructs/user-api-construct.js';
+import { SubmissionApiConstruct } from '../constructs/submission-api-construct.js';
+import { RecordApiConstruct } from '../constructs/record-api-construct.js';
 
 interface ApiStackProps extends StackProps {
     tables: Record<string, ITable>;
