@@ -45,12 +45,9 @@ export const Markdown: React.FC<MarkdownProps> = ({ text }) => {
         <Box px={3} py={2}>
             <ReactMarkdown
                 children={textHack}
-                // @ts-ignore
-                sourcePos
-                linkTarget="_blank"
                 remarkPlugins={[remarkGfm, remarkMath]}
                 rehypePlugins={[rehypeKatex]}
-                transformLinkUri={(uri: string) => (uri.startsWith('http') ? uri : '')}
+                urlTransform={(uri: string) => (uri.startsWith('http') ? uri : '')}
                 components={{
                     h1: ({ children, ...props }) => (
                         <Box py={2}>

@@ -27,7 +27,7 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import { Question, Card } from "../interfaces/interfaces";
+import { Question, Card, mockCard } from '../interfaces/interfaces';
 import { FiSearch } from "react-icons/fi";
 import { QuestionTable } from "./QuestionTable";
 import { ChevronDownIcon, HamburgerIcon } from "@chakra-ui/icons";
@@ -56,7 +56,7 @@ export const QuestionTableContainer: React.FC = () => {
   const [page, setPage] = useState<number>(0);
   const [orderCol, setOrderCol] = useState(4);
   const [order, setOrder] = useState(0); // 0 -> asc, 1 -> desc
-  const [questions, setQuestions] = useState<Card[]>([]);
+  const [questions, setQuestions] = useState<Card[]>([mockCard]);
   const [onlyActive, setOnlyActive] = useState<boolean>(true);
   const [action, setAction] = useState<TableAction>(TableAction.NORMAL);
   const [selected, setSelected] = useState<string[]>([]);
