@@ -11,7 +11,7 @@ import {
     useColorModeValue, useDisclosure,
 } from '@chakra-ui/react';
 import DashboardBar from '../components/dashboard/DashboardBar';
-import { Card } from '../models/Card';
+import { Card, mockCard } from '../models/Card';
 import QuestionTable from '../components/dashboard/QuestionTable';
 import PaginationControl from '../components/dashboard/PaginationControl';
 
@@ -40,7 +40,7 @@ const Dashboard = () => {
 
     const containerBg = useColorModeValue("white", "gray.900");
 
-    const filteredData: Card[] = [];
+    const filteredData: Card[] = [ mockCard ];
 
     const paginatedData: Card[] = useMemo(() => {
         return filteredData.slice(page * rowCount, (page + 1) * rowCount);

@@ -97,7 +97,7 @@ const QuestionTable: React.FC<QuestionTableProps> = ({
         ];
     }, [tableAction]);
 
-    const lang = "English";
+    const lang = "EN";
 
     const tableCells: TableCellProps[] = useMemo(() => [
             {
