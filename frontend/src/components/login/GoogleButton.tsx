@@ -2,9 +2,6 @@ import React from 'react';
 import GoogleLogin, { GoogleLoginResponse, GoogleLoginResponseOffline } from '@leecheuk/react-google-login';
 import { Button } from '@chakra-ui/react';
 import { AiFillGoogleCircle } from 'react-icons/ai';
-import * as dotenv from 'dotenv';
-
-dotenv.config();
 
 const clientId: string = process.env.REACT_APP_GOOGLE_CLIENT_ID || "";
 
