@@ -4,7 +4,7 @@ import { IFunction, Runtime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { LambdaIntegration } from 'aws-cdk-lib/aws-apigateway';
+import { AuthorizationType, LambdaIntegration } from 'aws-cdk-lib/aws-apigateway';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -26,7 +26,7 @@ export class SubmissionApiConstruct extends Construct {
             'CreateSubmissionLambda',
             {
                 ...baseConfig,
-                entry: path.join(__dirname, '../../lambdas/submissions/create-submission.ts'),
+                entry: path.join(__dirname, '../lambdas/submissions/create-submission.ts'),
                 handler: 'createSubmissionHandler'
             },
         );
@@ -37,7 +37,7 @@ export class SubmissionApiConstruct extends Construct {
             'GetSubmissionLambda',
             {
                 ...baseConfig,
-                entry: path.join(__dirname, '../../lambdas/submissions/get-submission.ts'),
+                entry: path.join(__dirname, '../lambdas/submissions/get-submission.ts'),
                 handler: 'getSubmissionHandler'
             }
         )
@@ -47,7 +47,7 @@ export class SubmissionApiConstruct extends Construct {
             'ArchiveSubmissionLambda',
             {
                 ...baseConfig,
-                entry: path.join(__dirname, '../../lambdas/submissions/archive-submission.ts'),
+                entry: path.join(__dirname, '../lambdas/submissions/archive-submission.ts'),
                 handler: 'archiveSubmissionHandler'
             }
         )
@@ -57,8 +57,17 @@ export class SubmissionApiConstruct extends Construct {
         props.table.grantReadWriteData(archiveSubmissionLambda);
 
         const submission = props.api.root.addResource('submission');
-        submission.addMethod('POST', new LambdaIntegration(createSubmissionLambda));
-        submission.addMethod('GET', new LambdaIntegration(getSubmissionLambda));
-        submission.addMethod('PUT', new LambdaIntegration(archiveSubmissionLambda));
+        submission.addMethod('POST', new LambdaIntegration(createSubmissionLambda), {
+            authorizer: props.authorizer,
+            authorizationType: AuthorizationType.COGNITO
+        });
+        submission.addMethod('GET', new LambdaIntegration(getSubmissionLambda), {
+            authorizer: props.authorizer,
+            authorizationType: AuthorizationType.COGNITO
+        });
+        submission.addMethod('PUT', new LambdaIntegration(archiveSubmissionLambda), {
+            authorizer: props.authorizer,
+            authorizationType: AuthorizationType.COGNITO
+        });
     }
 }

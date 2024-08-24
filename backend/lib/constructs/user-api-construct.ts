@@ -2,14 +2,22 @@ import { Construct } from 'constructs';
 import { ApiConstructProps } from './common/api-construct-props.js';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
-import { LambdaIntegration } from 'aws-cdk-lib/aws-apigateway';
+import {
+    AuthorizationType,
+    LambdaIntegration,
+} from 'aws-cdk-lib/aws-apigateway';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { UserPool } from 'aws-cdk-lib/aws-cognito';
+
+interface UserApiConstructProps extends ApiConstructProps {
+    userPool: UserPool;
+}
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export class UserApiConstruct extends Construct {
-    constructor(scope: Construct, id: string, props: ApiConstructProps) {
+    constructor(scope: Construct, id: string, props: UserApiConstructProps) {
         super(scope, id);
 
         const baseConfig = {
@@ -24,7 +32,7 @@ export class UserApiConstruct extends Construct {
             'CreateUserLambda',
             {
                 ...baseConfig,
-                entry: path.join(__dirname, '../../lambdas/users/create-user.ts'),
+                entry: path.join(__dirname, '../lambdas/users/create-user.ts'),
                 handler: 'createUserHandler'
             },
         );
@@ -34,7 +42,7 @@ export class UserApiConstruct extends Construct {
             'GetUserLambda',
             {
                 ...baseConfig,
-                entry: path.join(__dirname, '../../lambdas/users/get-user.ts'),
+                entry: path.join(__dirname, '../lambdas/users/get-user.ts'),
                 handler: 'getUserHandler'
             },
         );
@@ -44,7 +52,7 @@ export class UserApiConstruct extends Construct {
             'UpdateUserEmailLambda',
             {
                 ...baseConfig,
-                entry: path.join(__dirname, '../../lambdas/users/update-user-email.ts'),
+                entry: path.join(__dirname, '../lambdas/users/update-user-email.ts'),
                 handler: 'updateUserEmailHandler'
             },
         );
@@ -54,7 +62,7 @@ export class UserApiConstruct extends Construct {
             'UpdateUserPasswordLambda',
             {
                 ...baseConfig,
-                entry: path.join(__dirname, '../../lambdas/users/update-user-password.ts'),
+                entry: path.join(__dirname, '../lambdas/users/update-user-password.ts'),
                 handler: 'updateUserPasswordHandler'
             },
         );
@@ -64,7 +72,7 @@ export class UserApiConstruct extends Construct {
             'ArchiveUserLambda',
             {
                 ...baseConfig,
-                entry: path.join(__dirname, '../../lambdas/users/archive-user.ts'),
+                entry: path.join(__dirname, '../lambdas/users/archive-user.ts'),
                 handler: 'archiveUserHandler'
             },
         );
@@ -80,10 +88,16 @@ export class UserApiConstruct extends Construct {
         user.addMethod('GET', new LambdaIntegration(getUserLambda));
 
         const updateUserEmail = user.addResource('updateUserEmail');
-        updateUserEmail.addMethod('PUT', new LambdaIntegration(updateUserEmailLambda));
+        updateUserEmail.addMethod('PUT', new LambdaIntegration(updateUserEmailLambda), {
+            authorizer: props.authorizer,
+            authorizationType: AuthorizationType.COGNITO
+        });
 
         const updateUserPassword = user.addResource('updateUserPassword');
-        updateUserPassword.addMethod('PUT', new LambdaIntegration(updateUserPasswordLambda));
+        updateUserPassword.addMethod('PUT', new LambdaIntegration(updateUserPasswordLambda), {
+            authorizer: props.authorizer,
+            authorizationType: AuthorizationType.COGNITO
+        });
 
         const archiveUser = user.addResource('archive');
         archiveUser.addMethod('PUT', new LambdaIntegration(archiveUserLambda));

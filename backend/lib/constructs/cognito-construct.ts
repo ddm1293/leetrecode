@@ -1,11 +1,12 @@
 import {
     AccountRecovery,
     UserPool,
-    UserPoolClient, UserPoolIdentityProviderGoogle, UserPoolOperation,
+    UserPoolClient,
     VerificationEmailStyle,
 } from 'aws-cdk-lib/aws-cognito';
 import { Construct } from 'constructs';
 import * as dotenv from 'dotenv';
+import { CfnOutput, RemovalPolicy } from 'aws-cdk-lib';
 
 dotenv.config();
 
@@ -42,12 +43,32 @@ export class CognitoConstruct extends Construct {
             keepOriginal: {
                 email: true
             },
+            removalPolicy: RemovalPolicy.DESTROY,
         });
 
-        const googleProvider = new UserPoolIdentityProviderGoogle(this, 'LeetReCodeGoogleProvider', {
-            clientId: process.env.AWS_CLIENT_ID,
-            userPool: this.userPool
+        this.userPoolClient = new UserPoolClient(this, "LeetReCodeUserPoolClient", {
+            userPool: this.userPool,
+            authFlows: {
+                userPassword: true,
+            }
         })
 
+        this.userPool.addDomain("LeetReCodeUserPoolDomain", {
+            cognitoDomain: {
+                domainPrefix: "leetrecode",
+            }
+        })
+
+        new CfnOutput(this, 'UserPoolIdOutput', {
+            value: this.userPool.userPoolId,
+            description: 'The User Pool ID',
+            exportName: 'UserPoolId',
+        });
+
+        new CfnOutput(this, 'UserPoolClientIdOutput', {
+            value: this.userPoolClient.userPoolClientId,
+            description: 'The User Pool Client ID',
+            exportName: 'UserPoolClientId',
+        });
     }
 }

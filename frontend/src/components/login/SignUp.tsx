@@ -17,6 +17,7 @@ import { onClickGitHubHandler } from './GitHubLogin';
 import { BsGithub } from 'react-icons/bs';
 import { AiFillWechat } from 'react-icons/ai';
 import { onClickWeChatHandler } from './WechatLogin';
+import { signUp } from 'aws-amplify/auth'
 
 interface SignUpProps {
     toggleSignUp: () => void
@@ -30,7 +31,7 @@ const SignUp: React.FC<SignUpProps> = ({ toggleSignUp }) => {
     const [passwordErrors, setPasswordErrors] = React.useState<string[]>([]);
     const [formState, setFormState] = React.useState<FormState>("ready");
 
-    const onSubmit = () => {
+    const onSubmit = async () => {
         setFormState("saving");
         const emailErrors = [];
         const passwordErrors = [];
@@ -49,7 +50,13 @@ const SignUp: React.FC<SignUpProps> = ({ toggleSignUp }) => {
         setPasswordErrors(passwordErrors);
 
         if (emailErrors.length === 0 && passwordErrors.length === 0) {
+            console.log("calling signup amplify")
             // dispatch(signUpUserAsync({ email, password }));
+            const output = await signUp({
+                username: email,
+                password: password
+            })
+            console.log("see output: ", output)
         }
         setTimeout(() => {
             setFormState("ready");

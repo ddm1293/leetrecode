@@ -3,7 +3,7 @@ import { ApiConstructProps } from './common/api-construct-props.js';
 import { IFunction, Runtime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import path from 'path';
-import { LambdaIntegration, StepFunctionsIntegration, } from 'aws-cdk-lib/aws-apigateway';
+import { AuthorizationType, LambdaIntegration, StepFunctionsIntegration } from 'aws-cdk-lib/aws-apigateway';
 import { fileURLToPath } from 'url';
 import { CreateRecordConstruct } from './create-record-construct.js';
 import { ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
@@ -30,7 +30,7 @@ export class RecordApiConstruct extends Construct {
             'CheckRecordLambda',
             {
                 ...baseConfig,
-                entry: path.join(__dirname, '../../lambdas/records/check-record.ts'),
+                entry: path.join(__dirname, '../lambdas/records/check-record.ts'),
                 handler: 'checkRecordHandler'
             },
         );
@@ -40,7 +40,7 @@ export class RecordApiConstruct extends Construct {
             'CreateRecordLambda',
             {
                 ...baseConfig,
-                entry: path.join(__dirname, '../../lambdas/records/create-record.ts'),
+                entry: path.join(__dirname, '../lambdas/records/create-record.ts'),
                 handler: 'createRecordHandler'
             },
         );
@@ -50,7 +50,7 @@ export class RecordApiConstruct extends Construct {
             'UpdateRecordLambda',
             {
                 ...baseConfig,
-                entry: path.join(__dirname, '../../lambdas/records/update-record.ts'),
+                entry: path.join(__dirname, '../lambdas/records/update-record.ts'),
                 handler: 'updateRecordHandler'
             },
         );
@@ -60,7 +60,7 @@ export class RecordApiConstruct extends Construct {
             'GetRecordLambda',
             {
                 ...baseConfig,
-                entry: path.join(__dirname, '../../lambdas/records/get-record.ts'),
+                entry: path.join(__dirname, '../lambdas/records/get-record.ts'),
                 handler: 'getRecordHandler'
             },
         );
@@ -70,7 +70,7 @@ export class RecordApiConstruct extends Construct {
             'ArchiveRecordLambda',
             {
                 ...baseConfig,
-                entry: path.join(__dirname, '../../lambdas/records/archive-record.ts'),
+                entry: path.join(__dirname, '../lambdas/records/archive-record.ts'),
                 handler: 'archiveRecordHandler'
             },
         );
@@ -82,15 +82,30 @@ export class RecordApiConstruct extends Construct {
         props.table.grantReadWriteData(archiveRecordLambda);
 
         const record = props.api.root.addResource('record');
-        record.addMethod('POST', new LambdaIntegration(createRecordLambda));
-        record.addMethod('GET', new LambdaIntegration(getRecordLambda));
-        record.addMethod('PUT', new LambdaIntegration(updateRecordLambda));
+        record.addMethod('POST', new LambdaIntegration(createRecordLambda), {
+            authorizer: props.authorizer,
+            authorizationType: AuthorizationType.COGNITO
+        });
+        record.addMethod('GET', new LambdaIntegration(getRecordLambda), {
+            authorizer: props.authorizer,
+            authorizationType: AuthorizationType.COGNITO
+        });
+        record.addMethod('PUT', new LambdaIntegration(updateRecordLambda), {
+            authorizer: props.authorizer,
+            authorizationType: AuthorizationType.COGNITO
+        });
 
         const checkRecord = record.addResource('checkRecord');
-        checkRecord.addMethod('GET', new LambdaIntegration(checkRecordLambda));
+        checkRecord.addMethod('GET', new LambdaIntegration(checkRecordLambda), {
+            authorizer: props.authorizer,
+            authorizationType: AuthorizationType.COGNITO
+        });
 
         const archiveRecord = record.addResource('archive');
-        archiveRecord.addMethod('PUT', new LambdaIntegration(archiveRecordLambda));
+        archiveRecord.addMethod('PUT', new LambdaIntegration(archiveRecordLambda), {
+            authorizer: props.authorizer,
+            authorizationType: AuthorizationType.COGNITO
+        });
 
         const stepFunctionConstruct = new CreateRecordConstruct(this, 'CreateRecordConstruct', {
             checkRecordLambdaArn: checkRecordLambda.functionArn,
@@ -112,6 +127,9 @@ export class RecordApiConstruct extends Construct {
             {
                 credentialsRole: apiGatewayRole
             }
-        ));
+        ), {
+            authorizer: props.authorizer,
+            authorizationType: AuthorizationType.COGNITO
+        });
     }
 }
