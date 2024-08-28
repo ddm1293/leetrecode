@@ -5,7 +5,7 @@ import { TYPES } from '../../common/types.js';
 import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from 'aws-lambda';
 import { ErrorHandler } from '../../common/errors/error-handler.js';
 import { ResponseManager } from '../../common/response-manager.js';
-import { EmptyPathParamsError } from '../../common/errors/general-errors.js';
+import { EmptyPathParamsError, EmptyTableNameError } from '../../common/errors/general-errors.js';
 import { container } from '../../common/inversify.config';
 
 @injectable()
@@ -26,7 +26,12 @@ export class ArchiveUserHandler implements LambdaInterface {
                 return ErrorHandler.handleError(new EmptyPathParamsError('No email path parameter in the request.'));
             }
 
-            await this.userService.archive('userTable', email);
+            const tableName = process.env.TABLE_NAME;
+            if (tableName == undefined) {
+                return ErrorHandler.handleError(new EmptyTableNameError('Empty dynamoDB table name.'));
+            }
+
+            await this.userService.archive(tableName, email);
             return ResponseManager.success(200, {
                 message: `User with email deleted successfully`,
             });

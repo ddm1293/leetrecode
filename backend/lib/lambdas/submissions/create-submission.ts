@@ -10,6 +10,7 @@ import { Submission } from '../../models/submission.js';
 import { AddSubmissionDto } from '../../models/dto/add-submission-dto.js';
 import { NullRecordInSubmissionDTOError } from '../../common/errors/submission-error.js';
 import { QuestionRecord } from '../../models/question-record.js';
+import { EmptyTableNameError } from '../../common/errors/general-errors.js';
 
 @injectable()
 export class CreateSubmissionHandler implements LambdaInterface {
@@ -44,7 +45,11 @@ export class CreateSubmissionHandler implements LambdaInterface {
     ): Promise<Record<string, unknown>> {
         try {
             const [record, submission] = await this.parseSubmission(event, context);
-            await this.submissionService.add('userTable', submission);
+            const tableName = process.env.TABLE_NAME;
+            if (tableName == undefined) {
+                throw new EmptyTableNameError('Empty dynamoDB table name.');
+            }
+            await this.submissionService.add(tableName, submission);
 
             return {
                 record: record,

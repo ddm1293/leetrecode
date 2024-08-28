@@ -13,6 +13,7 @@ import { container } from '../../common/inversify.config.js';
 import { UserServiceImpl } from '../../services/user-service.js';
 import { EventParser } from '../../common/event-parser.js';
 import { UpdateUserPasswordDto } from '../../models/dto/update-user-password-dto.js';
+import { EmptyTableNameError } from '../../common/errors/general-errors.js';
 
 @injectable()
 export class UpdateUserPasswordHandler implements LambdaInterface {
@@ -29,7 +30,12 @@ export class UpdateUserPasswordHandler implements LambdaInterface {
         try {
             const updateDTO = await EventParser.parseDTOFromString(UpdateUserPasswordDto, event.body);
 
-            await this.userService.updatePassword('userTable', updateDTO);
+            const tableName = process.env.TABLE_NAME;
+            if (tableName == undefined) {
+                return ErrorHandler.handleError(new EmptyTableNameError('Empty dynamoDB table name.'));
+            }
+
+            await this.userService.updatePassword(tableName, updateDTO);
 
             return ResponseManager.success(200, {
                 message: 'User password updated successfully',

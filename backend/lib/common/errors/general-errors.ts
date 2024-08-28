@@ -24,3 +24,9 @@ export class FindItemError extends BaseError {
         super('FindItemError', message, ErrorCode.FIND_ITEM_ERROR, originalError);
     }
 }
+
+export class EmptyTableNameError extends BaseError {
+    constructor(message: string, originalError?: Error) {
+        super('EmptyTableNameError', message, ErrorCode.EMPTY_TABLE_NAME_ERROR, originalError);
+    }
+}

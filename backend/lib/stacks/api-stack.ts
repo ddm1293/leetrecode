@@ -33,14 +33,14 @@ export class ApiStack extends Stack {
             cognitoUserPools: [props.cognito.userPool],
         })
 
-        this.userStack = new UserApiConstruct(this, 'UserApiStack', {
+        this.userStack = new UserApiConstruct(this, 'UserApiConstruct', {
             api: restApi,
             table: props.tables['userTable'],
             authorizer,
             userPool: props.cognito.userPool,
         });
 
-        this.submissionStack = new SubmissionApiConstruct(this, 'SubmissionApiStack', {
+        this.submissionStack = new SubmissionApiConstruct(this, 'SubmissionApiConstruct', {
                 api: restApi,
                 table: props.tables['userTable'],
                 authorizer,

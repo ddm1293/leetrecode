@@ -26,7 +26,12 @@ export class GetUserHandler implements LambdaInterface {
                 return ErrorHandler.handleError(new EmptyPathParamsError('No email path parameter in the request.'));
             }
 
-            const userFound = await this.userService.findOneByEmail('userTable', email);
+            const tableName = process.env.TABLE_NAME;
+            if (tableName == undefined) {
+                return ErrorHandler.handleError(new EmptyTableNameError('Empty dynamoDB table name.'));
+            }
+
+            const userFound = await this.userService.findOneByEmail(tableName, email);
             return ResponseManager.success(200, {
                 message: `Get User: ${email} successfully`,
                 user: userFound

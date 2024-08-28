@@ -7,6 +7,7 @@ import { container } from '../../common/inversify.config.js';
 import { EventParser } from '../../common/event-parser.js';
 import { RecordServiceImpl } from '../../services/record-service.js';
 import { CheckRecordDto } from '../../models/dto/check-record-dto.js';
+import { EmptyTableNameError } from '../../common/errors/general-errors.js';
 
 @injectable()
 export class CheckRecordLambda implements LambdaInterface {
@@ -24,7 +25,12 @@ export class CheckRecordLambda implements LambdaInterface {
             const dto: CheckRecordDto = await EventParser.parseDTOFromObj(CheckRecordDto, event);
             const email = dto.email;
             const questionId = dto.submissionDetails.question.questionId;
-            return this.recordService.checkRecord('userTable', email, questionId);
+
+            const tableName = process.env.TABLE_NAME;
+            if (tableName == undefined) {
+                throw new EmptyTableNameError('Empty dynamoDB table name.');
+            }
+            return this.recordService.checkRecord(tableName, email, questionId);
         } catch (error) {
             console.error(error)
             return {

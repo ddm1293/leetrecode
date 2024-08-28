@@ -9,6 +9,7 @@ import { EventParser } from '../../common/event-parser.js';
 import { CreateRecordDto } from '../../models/dto/create-record-dto.js';
 import { QuestionRecord } from '../../models/question-record.js';
 import { UserServiceImpl } from '../../services/user-service.js';
+import { EmptyTableNameError } from '../../common/errors/general-errors.js';
 
 @injectable()
 export class CreateRecordLambda implements LambdaInterface {
@@ -29,7 +30,11 @@ export class CreateRecordLambda implements LambdaInterface {
     ): Promise<Record<string, unknown>> {
         try {
             const dto: CreateRecordDto = await EventParser.parseDTOFromObj(CreateRecordDto, event);
-            const user = await this.userService.findOneByEmail('userTable', dto.email);
+            const tableName = process.env.TABLE_NAME;
+            if (tableName == undefined) {
+                throw new EmptyTableNameError('Empty dynamoDB table name.');
+            }
+            const user = await this.userService.findOneByEmail(tableName, dto.email);
             const record = new QuestionRecord(
                 user.id,
                 dto.email,
@@ -39,7 +44,7 @@ export class CreateRecordLambda implements LambdaInterface {
                 [],
                 1,
                 );
-            const persistedRecord = await this.recordService.add('userTable', record);
+            const persistedRecord = await this.recordService.add(tableName, record);
 
             return  {
                 recordCreated: persistedRecord

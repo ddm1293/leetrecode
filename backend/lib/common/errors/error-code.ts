@@ -1,9 +1,12 @@
+import { EmptyTableNameError } from './general-errors';
+
 export enum ErrorCode {
     // General Error
     EMPTY_REQUEST_BODY_ERROR = 101,
     EMPTY_PATH_PARAMS_ERROR = 102,
     PARSE_JSON_ERROR = 103,
     FIND_ITEM_ERROR = 104,
+    EMPTY_TABLE_NAME_ERROR = 105,
 
     // User Error
     PARSE_USER_ERROR = 201,

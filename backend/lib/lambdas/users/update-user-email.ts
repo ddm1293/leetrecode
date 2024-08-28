@@ -13,6 +13,7 @@ import { container } from '../../common/inversify.config.js';
 import { UserServiceImpl } from '../../services/user-service.js';
 import { EventParser } from '../../common/event-parser.js';
 import { UpdateUserEmailDto } from '../../models/dto/update-user-email-dto.js';
+import { EmptyTableNameError } from '../../common/errors/general-errors.js';
 
 @injectable()
 export class UpdateUserEmailHandler implements LambdaInterface {
@@ -29,7 +30,12 @@ export class UpdateUserEmailHandler implements LambdaInterface {
         try {
             const updateDTO = await EventParser.parseDTOFromString(UpdateUserEmailDto, event.body);
 
-            await this.userService.updateEmail('userTable', updateDTO);
+            const tableName = process.env.TABLE_NAME;
+            if (tableName == undefined) {
+                return ErrorHandler.handleError(new EmptyTableNameError('Empty dynamoDB table name.'));
+            }
+
+            await this.userService.updateEmail(tableName, updateDTO);
 
             return ResponseManager.success(200, {
                 message: 'User email updated successfully',
