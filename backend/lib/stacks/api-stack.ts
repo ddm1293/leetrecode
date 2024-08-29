@@ -1,7 +1,7 @@
 import { Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { ITable } from 'aws-cdk-lib/aws-dynamodb';
-import { CognitoUserPoolsAuthorizer, RestApi } from 'aws-cdk-lib/aws-apigateway';
+import { CognitoUserPoolsAuthorizer, Cors, RestApi } from 'aws-cdk-lib/aws-apigateway';
 import { UserApiConstruct } from '../constructs/user-api-construct.js';
 import { SubmissionApiConstruct } from '../constructs/submission-api-construct.js';
 import { RecordApiConstruct } from '../constructs/record-api-construct.js';
@@ -27,6 +27,10 @@ export class ApiStack extends Stack {
         const restApi: RestApi = new RestApi(this, 'LeetReCodeApi', {
             restApiName: 'Leetrecode Api Gateway',
             description: 'This service serves my API.',
+            defaultCorsPreflightOptions: {
+                allowOrigins: Cors.ALL_ORIGINS,
+                allowMethods: Cors.ALL_METHODS,
+            }
         });
 
         const authorizer = new CognitoUserPoolsAuthorizer(this, "LeetReCodeCognitoAuthorizer", {

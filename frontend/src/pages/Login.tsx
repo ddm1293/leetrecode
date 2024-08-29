@@ -4,7 +4,7 @@ import { Container } from '@chakra-ui/react';
 import SignUp from '../components/login/SignUp';
 import ForgetPassword from '../components/login/ForgetPassword';
 
-export type FormState = "ready" | "saving";
+export type FormState = "ready" | "saving" | "error";
 
 export const validateEmail = (email: string) => {
     return String(email)
