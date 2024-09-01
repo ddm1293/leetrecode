@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
     Box,
     Container,
@@ -14,6 +14,8 @@ import DashboardBar from '../components/dashboard/DashboardBar';
 import { Card, mockCard } from '../models/Card';
 import QuestionTable from '../components/dashboard/QuestionTable';
 import PaginationControl from '../components/dashboard/PaginationControl';
+import { useNavigate } from 'react-router-dom';
+import { useCurrentUserHook } from '../hooks/currentUserHook';
 
 export enum TableAction {
     NORMAL,

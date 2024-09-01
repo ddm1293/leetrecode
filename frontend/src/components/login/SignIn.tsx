@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import {
     ScaleFade,
     VStack,
@@ -17,6 +17,9 @@ import { AiFillWechat } from 'react-icons/ai';
 import { onClickGitHubHandler } from './GitHubLogin';
 import { onClickWeChatHandler } from './WechatLogin';
 import { FormState, validateEmail } from '../../pages/Login';
+import { useQueryClient } from '@tanstack/react-query';
+import { signInCognito } from '../../hooks/signInAction';
+import { useNavigate } from 'react-router-dom';
 
 interface SignInProps {
     toggleSignUp: () => void,
@@ -29,22 +32,31 @@ const SignIn: React.FC<SignInProps> = ({ toggleSignUp, toggleForgetPassword }) =
     const [errors, setErrors] = React.useState<string[]>([]);
     const [formState, setFormState] = React.useState<FormState>("ready");
 
-    const onSubmit = () => {
+    const queryClient = useQueryClient();
+    const navigate = useNavigate();
+
+    const onSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
         setFormState("saving");
 
-        const errors = [];
         if (!validateEmail(email)) {
-            errors.push("Invalid credential");
+            setFormState("error");
+            setErrors(state => {
+                state.push("Invalid Email")
+                return state
+            });
+            return
         }
-        setErrors(errors);
 
-        // TODO may not work here
-        if (errors.length === 0) {
-            // dispatch(loginUserAsync({ email, password }));
+        try {
+            const res = await signInCognito({ email, password });
+            await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+            navigate("/dashboard");
+        } catch (error) {
+            console.error(error)
+            setFormState("error");
         }
-        setTimeout(() => {
-            setFormState("ready");
-        }, 1000);
     };
 
     return (

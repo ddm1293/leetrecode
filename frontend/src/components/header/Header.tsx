@@ -1,7 +1,6 @@
 import React from 'react';
 import {
     Box,
-    Button,
     Flex,
     Heading,
     Text,
@@ -14,10 +13,11 @@ import {
 } from '@chakra-ui/react';
 import { HamburgerIcon } from '@chakra-ui/icons';
 import { AiFillGithub } from 'react-icons/ai';
-import logo from "../assets/logo.png";
+import logo from "../../assets/logo.png";
 import { MdDarkMode, MdSettingsSuggest } from 'react-icons/md';
 import { FaLanguage } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
+import AuthButton from './AuthButton';
 
 const links = [
     {
@@ -43,15 +43,6 @@ const Header = () => {
     const handleToggle = () => (isOpen ? onClose() : onOpen());
     const { toggleColorMode } = useColorMode();
     const navigate = useNavigate();
-
-    const handleClick = () => {
-        // if (user.status === "active") {
-        //     navigate("/logout");
-        // } else {
-        //     navigate("/login");
-        // }
-        navigate("/login");
-    };
 
     return (
         <Flex
@@ -181,15 +172,7 @@ const Header = () => {
                     </Tooltip>
 
                     <LightMode>
-                        <Button
-                            variant="solid"
-                            w={{ base: "full", md: "auto" }}
-                            colorScheme="green"
-                            onClick={handleClick}
-                        >
-                            {/*{user.status === "active" ? "Logout" : "Login"}*/}
-                            Login
-                        </Button>
+                        <AuthButton />
                     </LightMode>
                 </Stack>
             </Box>

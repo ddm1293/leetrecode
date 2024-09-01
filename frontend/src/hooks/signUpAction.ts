@@ -1,8 +1,7 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { post } from 'aws-amplify/api';
 import { signUp } from 'aws-amplify/auth';
 
-interface CreateUserDTO {
+type CreateUserDTO = {
     email: string;
     password: string;
 }
@@ -41,22 +40,8 @@ const createUserInBackend = async (user: CreateUserDTO) => {
     }
 }
 
-const createUser = async (user: CreateUserDTO) => {
+export const createUser = async (user: CreateUserDTO) => {
     const cognitoUser = await signUpInCognito(user);
     const backendUser = await createUserInBackend(user);
     return { cognitoUser, backendUser };
-}
-
-export const useCreateUser = () => {
-    const queryClient = useQueryClient();
-
-    return useMutation({
-        mutationFn: createUser,
-        onSuccess: (data) => {
-            queryClient.invalidateQueries({
-                queryKey: ["users"]
-            })
-            console.log('User created successfully:', data);
-        }
-    });
 }

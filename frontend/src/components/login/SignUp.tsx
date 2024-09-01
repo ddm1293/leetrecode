@@ -17,8 +17,8 @@ import { onClickGitHubHandler } from './GitHubLogin';
 import { BsGithub } from 'react-icons/bs';
 import { AiFillWechat } from 'react-icons/ai';
 import { onClickWeChatHandler } from './WechatLogin';
-import { useCreateUser } from '../../hooks/userHook';
-import { useNavigate } from 'react-router-dom';
+import { createUser } from '../../hooks/signUpAction';
+
 
 interface SignUpProps {
     toggleSignUp: () => void
@@ -32,9 +32,7 @@ const SignUp: React.FC<SignUpProps> = ({ toggleSignUp }) => {
     const [passwordErrors, setPasswordErrors] = React.useState<string[]>([]);
     const [formState, setFormState] = React.useState<FormState>("ready");
 
-    const createUserMutation = useCreateUser();
     const toast = useToast();
-    const navigate = useNavigate();
 
     const onSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -62,7 +60,7 @@ const SignUp: React.FC<SignUpProps> = ({ toggleSignUp }) => {
         }
 
         try {
-            const res = await createUserMutation.mutateAsync({ email, password })
+            const res = await createUser({ email, password })
             console.log("see res signing up: ", res);
             toast({
                 title: "Sign up Confirmation",

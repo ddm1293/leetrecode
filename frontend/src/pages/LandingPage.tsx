@@ -1,9 +1,23 @@
 import React from 'react';
 import { Box, Button, Flex, Heading, Text, Image, LightMode } from '@chakra-ui/react';
 import LangPageIllustration from '../assets/LandingPageIllustration.png'
+import { useNavigate } from 'react-router-dom';
+import { useCurrentUserHook } from '../hooks/currentUserHook';
 
 
 const LandingPage = () => {
+    const navigate = useNavigate();
+    const { isSuccess, data } = useCurrentUserHook();
+    const isLoggedIn: boolean = isSuccess && data !== null;
+
+    const handleClick = () => {
+        if (isLoggedIn) {
+            navigate('/dashboard');
+        } else {
+            navigate("/login");
+        }
+    }
+
     return (
         <Box minH="calc(100vh - 4rem)" bg="pink.300" px="2rem">
             <Flex
@@ -38,7 +52,7 @@ const LandingPage = () => {
                     </Text>
                     <LightMode>
                         <Button
-                            // onClick={handleClick}
+                            onClick={handleClick}
                             variant="solid"
                             colorScheme="green"
                             h={{ base: "3.5rem", xl: "4rem" }}

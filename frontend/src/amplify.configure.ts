@@ -28,5 +28,3 @@ Amplify.configure({
         }
     }
 })
-
-console.log("see amplify config: ", Amplify.getConfig())
