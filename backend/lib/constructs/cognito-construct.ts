@@ -50,6 +50,7 @@ export class CognitoConstruct extends Construct {
             userPool: this.userPool,
             authFlows: {
                 userPassword: true,
+                userSrp: true,
             }
         })
 
