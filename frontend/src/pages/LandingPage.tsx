@@ -47,7 +47,7 @@ const LandingPage = () => {
                         maxW={{ base: "32rem", md: "36rem", xl: "45rem" }}
                         fontWeight="semibold"
                     >
-                        Submitted a solution that takes you half an hour to craft, only to forget it the next week?
+                        Submitted a solution that took you half an hour to craft, only to forget it the next week?
                         Try LeetReCode to keep your memory fresh!
                     </Text>
                     <LightMode>
