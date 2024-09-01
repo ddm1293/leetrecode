@@ -1,46 +1,61 @@
 import { Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { ITable } from 'aws-cdk-lib/aws-dynamodb';
-import { RestApi } from 'aws-cdk-lib/aws-apigateway';
-import { UserApiStack } from './sub-api-stacks/user-api-stack.js';
-import { SubmissionApiStack } from './sub-api-stacks/submission-api-stack.js';
-import { RecordApiStack } from './sub-api-stacks/record-api-stack.js';
+import { CognitoUserPoolsAuthorizer, Cors, RestApi } from 'aws-cdk-lib/aws-apigateway';
+import { UserApiConstruct } from '../constructs/user-api-construct.js';
+import { SubmissionApiConstruct } from '../constructs/submission-api-construct.js';
+import { RecordApiConstruct } from '../constructs/record-api-construct.js';
+import { UserPool, UserPoolClient } from 'aws-cdk-lib/aws-cognito';
 
 interface ApiStackProps extends StackProps {
     tables: Record<string, ITable>;
+    cognito: {
+        userPool: UserPool;
+        userPoolClient: UserPoolClient;
+    }
 }
 
 export class ApiStack extends Stack {
-    public userStack: UserApiStack;
-    public submissionStack: SubmissionApiStack;
-    public recordStack: RecordApiStack;
+    public userStack: UserApiConstruct;
+    public submissionStack: SubmissionApiConstruct;
+    public recordStack: RecordApiConstruct;
 
     constructor(scope: Construct, id: string, props: ApiStackProps) {
         super(scope, id, props);
 
         // TODO: understand RestApi construct
-        const restApi: RestApi = new RestApi(this, 'MyApi', {
+        const restApi: RestApi = new RestApi(this, 'LeetReCodeApi', {
             restApiName: 'Leetrecode Api Gateway',
             description: 'This service serves my API.',
+            defaultCorsPreflightOptions: {
+                allowOrigins: Cors.ALL_ORIGINS,
+                allowMethods: Cors.ALL_METHODS,
+            }
         });
 
-        this.userStack = new UserApiStack(this, 'UserApiStack', {
+        const authorizer = new CognitoUserPoolsAuthorizer(this, "LeetReCodeCognitoAuthorizer", {
+            cognitoUserPools: [props.cognito.userPool],
+        })
+
+        this.userStack = new UserApiConstruct(this, 'UserApiConstruct', {
             api: restApi,
             table: props.tables['userTable'],
+            authorizer,
+            userPool: props.cognito.userPool,
         });
 
-        this.submissionStack = new SubmissionApiStack(
-            this,
-            'SubmissionApiStack',
-            {
+        this.submissionStack = new SubmissionApiConstruct(this, 'SubmissionApiConstruct', {
                 api: restApi,
                 table: props.tables['userTable'],
+                authorizer,
             },
         );
 
-        this.recordStack = new RecordApiStack(this, 'RecordApiStack', {
+        this.recordStack = new RecordApiConstruct(this, 'RecordApiConstruct', {
             api: restApi,
             table: props.tables['userTable'],
+            createSubmissionLambda: this.submissionStack.createSubmissionLambda,
+            authorizer,
         });
     }
 }

@@ -8,7 +8,7 @@ import { FindUserError } from '../common/errors/user-errors.js';
 import { Key } from '../models/common/item.js';
 
 @injectable()
-export class UserRepository extends ItemRepository {
+export class UserRepository extends ItemRepository<User> {
     constructor(@inject(DynamoDBClientManager) DBClient: DynamoDBClientManager) {
         super(DBClient);
     }
@@ -17,8 +17,11 @@ export class UserRepository extends ItemRepository {
         try {
             const res = await this.client.send(new QueryCommand({
                 TableName: tableName,
-                IndexName: 'userEmailIndex',
-                KeyConditionExpression: 'email = :email',
+                IndexName: 'GSI1',
+                KeyConditionExpression: '#gsi1pk = :email',
+                ExpressionAttributeNames: {
+                    '#gsi1pk': 'GSI1_PK',
+                },
                 ExpressionAttributeValues: {
                     ':email': email,
                 },
@@ -42,7 +45,7 @@ export class UserRepository extends ItemRepository {
             new UpdateCommand({
                 TableName: tableName,
                 Key: key,
-                UpdateExpression: 'SET email = :newEmail',
+                UpdateExpression: 'SET email = :newEmail, GSI1_PK = :newEmail',
                 ExpressionAttributeValues: {
                     ':newEmail': newEmail,
                 },

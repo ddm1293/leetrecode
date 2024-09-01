@@ -6,17 +6,14 @@ import {
     Context,
 } from 'aws-lambda';
 import { ResponseManager } from '../../common/response-manager.js';
-import middy from '@middy/core';
-import httpErrorHandler from '@middy/http-error-handler';
-import httpHeaderNormalizer from '@middy/http-header-normalizer';
-import httpJsonBodyParser from '@middy/http-json-body-parser';
 import { ErrorHandler } from '../../common/errors/error-handler.js';
 import { injectable, inject } from 'inversify';
 import { TYPES } from '../../common/types.js';
 import { container } from '../../common/inversify.config.js';
-import { UserServiceImpl } from '../../services/user-service-impl.js';
+import { UserServiceImpl } from '../../services/user-service.js';
 import { EventParser } from '../../common/event-parser.js';
 import { UpdateUserEmailDto } from '../../models/dto/update-user-email-dto.js';
+import { EmptyTableNameError } from '../../common/errors/general-errors.js';
 
 @injectable()
 export class UpdateUserEmailHandler implements LambdaInterface {
@@ -31,9 +28,14 @@ export class UpdateUserEmailHandler implements LambdaInterface {
         context: Context,
     ): Promise<APIGatewayProxyResult> {
         try {
-            const updateDTO = await EventParser.parseDTO(UpdateUserEmailDto, event.body);
+            const updateDTO = await EventParser.parseDTOFromString(UpdateUserEmailDto, event.body);
 
-            await this.userService.updateEmail('userTable', updateDTO);
+            const tableName = process.env.TABLE_NAME;
+            if (tableName == undefined) {
+                return ErrorHandler.handleError(new EmptyTableNameError('Empty dynamoDB table name.'));
+            }
+
+            await this.userService.updateEmail(tableName, updateDTO);
 
             return ResponseManager.success(200, {
                 message: 'User email updated successfully',
@@ -45,10 +47,4 @@ export class UpdateUserEmailHandler implements LambdaInterface {
 }
 
 const handlerInstance: UpdateUserEmailHandler = container.resolve(UpdateUserEmailHandler)
-const lambdaHandler = handlerInstance.handler.bind(handlerInstance);
-
-export const updateUserEmailHandler = middy()
-    .use(httpHeaderNormalizer())
-    .use(httpJsonBodyParser())
-    .use(httpErrorHandler())
-    .handler(lambdaHandler);
+export const updateUserEmailHandler = handlerInstance.handler.bind(handlerInstance);

@@ -1,10 +1,8 @@
-import React from 'react';
+import { Box, Checkbox, Code, Divider, Heading, Link, Text, useColorModeValue } from '@chakra-ui/react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
-import { Checkbox, Code, Link, useColorModeValue } from '@chakra-ui/react';
-import { Box, Divider, Heading, Text } from '@chakra-ui/react';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
@@ -28,6 +26,7 @@ export const Markdown: React.FC<MarkdownProps> = ({ text }) => {
     const codeColor = useColorModeValue('#171923', '#F7FAFC');
     const codeBlockBg = useColorModeValue('gray.100', 'gray.800');
     const blockquoteColor = useColorModeValue('gray.400', 'gray.500');
+
     let textHack = text;
     if (text.includes('**Output')) {
         textHack = textHack
@@ -45,14 +44,11 @@ export const Markdown: React.FC<MarkdownProps> = ({ text }) => {
         <Box px={3} py={2}>
             <ReactMarkdown
                 children={textHack}
-                // @ts-ignore
-                sourcePos
-                linkTarget="_blank"
                 remarkPlugins={[remarkGfm, remarkMath]}
                 rehypePlugins={[rehypeKatex]}
-                transformLinkUri={(uri: string) => (uri.startsWith('http') ? uri : '')}
+                urlTransform={(uri: string) => (uri.startsWith('http') ? uri : '')}
                 components={{
-                    h1: ({ children, ...props }) => (
+                    h1: ({ children }) => (
                         <Box py={2}>
                             <Heading as="h1" pb={2}>
                                 {children}
@@ -60,7 +56,7 @@ export const Markdown: React.FC<MarkdownProps> = ({ text }) => {
                             <Divider />
                         </Box>
                     ),
-                    h2: ({ children, ...props }) => (
+                    h2: ({ children }) => (
                         <Box py={2}>
                             <Heading as="h2" size="lg" pb={2}>
                                 {children}
@@ -68,7 +64,7 @@ export const Markdown: React.FC<MarkdownProps> = ({ text }) => {
                             <Divider />
                         </Box>
                     ),
-                    h3: ({ children, ...props }) => (
+                    h3: ({ children }) => (
                         <Box py={2}>
                             <Heading as="h3" size="md" pb={2}>
                                 {children}
@@ -76,7 +72,7 @@ export const Markdown: React.FC<MarkdownProps> = ({ text }) => {
                             <Divider />
                         </Box>
                     ),
-                    h4: ({ children, ...props }) => (
+                    h4: ({ children }) => (
                         <Box py={2}>
                             <Heading as="h4" size="sm" pb={2}>
                                 {children}
@@ -84,7 +80,7 @@ export const Markdown: React.FC<MarkdownProps> = ({ text }) => {
                             <Divider />
                         </Box>
                     ),
-                    h5: ({ children, ...props }) => (
+                    h5: ({ children }) => (
                         <Box py={2}>
                             <Heading as="h5" size="xs" pb={2}>
                                 {children}
@@ -92,7 +88,7 @@ export const Markdown: React.FC<MarkdownProps> = ({ text }) => {
                             <Divider />
                         </Box>
                     ),
-                    h6: ({ children, ...props }) => (
+                    h6: ({ children }) => (
                         <Box py={2}>
                             <Heading as="h6" size="xs" pb={2}>
                                 {children}
@@ -100,13 +96,13 @@ export const Markdown: React.FC<MarkdownProps> = ({ text }) => {
                             <Divider />
                         </Box>
                     ),
-                    p: ({ children, ...props }) => <Text>{children}</Text>,
-                    a: ({ children, href, ...props }: AnchorComponentProps) => (
+                    p: ({ children }) => <Text>{children}</Text>,
+                    a: ({ children, href }: AnchorComponentProps) => (
                         <Link color="orange.400" href={href} target="_blank">
                             {children}
                         </Link>
                     ),
-                    code: ({ inline, className, children, ...props }: CodeComponentProps) => {
+                    code: ({ inline, className, children }: CodeComponentProps) => {
                         const language = className?.replace('language-', '') || 'plaintext';
 
                         return inline ? (
@@ -124,27 +120,27 @@ export const Markdown: React.FC<MarkdownProps> = ({ text }) => {
                             </SyntaxHighlighter>
                         );
                     },
-                    pre: ({ children, ...props }) => (
+                    pre: ({ children }) => (
                         <Box as="pre" w="full" bg={codeBlockBg} p={3}>
                             {children}
                         </Box>
                     ),
-                    ul: ({ children, ...props }) => (
+                    ul: ({ children }) => (
                         <Box className="list-inside list-disc" as="ul" py={2}>
                             {children}
                         </Box>
                     ),
-                    ol: ({ children, ...props }) => (
+                    ol: ({ children }) => (
                         <Box className="list-decimal indent-2 pl-4" as="ol" py={2}>
                             {children}
                         </Box>
                     ),
-                    input: ({ children, checked, ...props }) => (
+                    input: ({ children, checked }) => (
                         <Checkbox isChecked={checked} pt={1} pr={1}>
                             {children}
                         </Checkbox>
                     ),
-                    blockquote: ({ children, ...props }) => (
+                    blockquote: ({ children }) => (
                         <Box
                             as="blockquote"
                             my={2}

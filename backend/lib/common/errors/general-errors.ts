@@ -12,3 +12,21 @@ export class EmptyPathParamsError extends BaseError {
         super('EmptyPathParamsError', message, ErrorCode.EMPTY_PATH_PARAMS_ERROR, originalError);
     }
 }
+
+export class ParseJsonError extends BaseError {
+    constructor(message: string, originalError?: Error) {
+        super('ParseJsonError', message, ErrorCode.PARSE_JSON_ERROR, originalError);
+    }
+}
+
+export class FindItemError extends BaseError {
+    constructor(message: string, originalError?: Error) {
+        super('FindItemError', message, ErrorCode.FIND_ITEM_ERROR, originalError);
+    }
+}
+
+export class EmptyTableNameError extends BaseError {
+    constructor(message: string, originalError?: Error) {
+        super('EmptyTableNameError', message, ErrorCode.EMPTY_TABLE_NAME_ERROR, originalError);
+    }
+}

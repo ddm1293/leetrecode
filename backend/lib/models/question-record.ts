@@ -1,43 +1,33 @@
 import { Item } from './common/item.js';
+import { Expose } from 'class-transformer';
 
 export class QuestionRecord extends Item {
-    public recordId: string;
-    public userId: string;
-    public questionId: string;
-    public latestSubmissionId: string;
-    public lastReviewDate: Date;
-    public nextReviewDate: Date;
-    public notes: string[];
-    public submissionCount: number;
-    public createdAt: Date;
-    public updatedAt: Date;
-    public isArchived: boolean;
+    @Expose() public userId: string;
+    @Expose() public email: string;
+    @Expose() public questionId: string;
+    @Expose() public latestSubmissionId: string  | null;
+    @Expose() public lastReviewDate: number;
+    @Expose() public nextReviewDate: number;
+    @Expose() public notes: string[];
+    @Expose() public submissionCount: number;
 
     constructor(
-        recordId: string,
-        ownerId: string,
+        userId: string,
+        email: string,
         questionId: string,
-        latestSubmissionId: string,
-        lastReviewDate: Date,
-        nextReviewDate: Date,
+        lastReviewDate: number,
+        nextReviewDate: number,
         notes: string[],
         submissionCount: number,
-        createdAt: Date,
-        updatedAt: Date,
-        isArchived: boolean,
     ) {
         super();
-        this.recordId = recordId;
-        this.userId = ownerId;
+        this.userId = userId;
+        this.email = email;
         this.questionId = questionId;
-        this.latestSubmissionId = latestSubmissionId;
         this.lastReviewDate = lastReviewDate;
         this.nextReviewDate = nextReviewDate;
         this.notes = notes;
         this.submissionCount = submissionCount;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.isArchived = isArchived;
     }
 
     get pk(): string {
@@ -45,5 +35,13 @@ export class QuestionRecord extends Item {
     }
     get sk(): string {
         return `RECORD#${this.questionId}`;
+    }
+
+    public gsi1_pk(): string {
+        return this.email;
+    }
+
+    public gsi1_sk(): string {
+        return this.questionId;
     }
 }

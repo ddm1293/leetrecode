@@ -1,9 +1,12 @@
-import { EmailHasBeenRegisteredError, FindUserError, IdenticalPasswordError, UpdateUserError } from './user-errors';
+import { EmptyTableNameError } from './general-errors';
 
 export enum ErrorCode {
     // General Error
     EMPTY_REQUEST_BODY_ERROR = 101,
     EMPTY_PATH_PARAMS_ERROR = 102,
+    PARSE_JSON_ERROR = 103,
+    FIND_ITEM_ERROR = 104,
+    EMPTY_TABLE_NAME_ERROR = 105,
 
     // User Error
     PARSE_USER_ERROR = 201,
@@ -16,4 +19,12 @@ export enum ErrorCode {
     UPDATE_USER_ERROR = 208,
     EMAIL_HAS_BEEN_REGISTERED = 209,
     IDENTICAL_PASSWORD_ERROR = 210,
+
+    // Record Error
+    FIND_RECORD_ERROR = 301,
+    PERSIST_RECORD_ERROR = 302,
+    RECORD_ALREADY_EXISTS_ERROR = 303,
+
+    // Submission Error
+    NULL_RECORD_IN_SUBMISSION_DTO_ERROR = 401,
 }

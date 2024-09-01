@@ -1,5 +1,5 @@
 import { LambdaInterface } from '@aws-lambda-powertools/commons/lib/cjs/types';
-import { UserServiceImpl } from '../../services/user-service-impl.js';
+import { UserServiceImpl } from '../../services/user-service.js';
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../../common/types.js';
 import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from 'aws-lambda';
@@ -7,9 +7,6 @@ import { ErrorHandler } from '../../common/errors/error-handler.js';
 import { ResponseManager } from '../../common/response-manager.js';
 import { EmptyPathParamsError } from '../../common/errors/general-errors.js';
 import { container } from '../../common/inversify.config';
-import middy from '@middy/core';
-import httpHeaderNormalizer from '@middy/http-header-normalizer';
-import httpErrorHandler from '@middy/http-error-handler';
 
 @injectable()
 export class GetUserHandler implements LambdaInterface {
@@ -29,7 +26,12 @@ export class GetUserHandler implements LambdaInterface {
                 return ErrorHandler.handleError(new EmptyPathParamsError('No email path parameter in the request.'));
             }
 
-            const userFound = await this.userService.findOneByEmail('userTable', email);
+            const tableName = process.env.TABLE_NAME;
+            if (tableName == undefined) {
+                return ErrorHandler.handleError(new EmptyTableNameError('Empty dynamoDB table name.'));
+            }
+
+            const userFound = await this.userService.findOneByEmail(tableName, email);
             return ResponseManager.success(200, {
                 message: `Get User: ${email} successfully`,
                 user: userFound
@@ -41,9 +43,4 @@ export class GetUserHandler implements LambdaInterface {
 }
 
 const handlerInstance: GetUserHandler = container.resolve(GetUserHandler);
-const lambdaHandler = handlerInstance.handler.bind(handlerInstance);
-
-export const getUserHandler = middy()
-    .use(httpHeaderNormalizer())
-    .use(httpErrorHandler())
-    .handler(lambdaHandler);
+export const getUserHandler = handlerInstance.handler.bind(handlerInstance);
