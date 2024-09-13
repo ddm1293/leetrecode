@@ -13,7 +13,7 @@ import { TYPES } from '../../common/types.js';
 import { container } from '../../common/inversify.config.js';
 import { UserServiceImpl } from '../../services/user-service.js';
 import { EventParser } from '../../common/event-parser.js';
-import { EmptyPathParamsError } from '../../common/errors/general-errors';
+import { EmptyTableNameError } from '../../common/errors/general-errors';
 
 @injectable()
 export class CreateUserHandler implements LambdaInterface {

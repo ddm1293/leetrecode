@@ -1,5 +1,3 @@
-import { EmptyTableNameError } from './general-errors';
-
 export enum ErrorCode {
     // General Error
     EMPTY_REQUEST_BODY_ERROR = 101,
@@ -7,6 +5,7 @@ export enum ErrorCode {
     PARSE_JSON_ERROR = 103,
     FIND_ITEM_ERROR = 104,
     EMPTY_TABLE_NAME_ERROR = 105,
+    PARSE_DTO_ERROR = 106,
 
     // User Error
     PARSE_USER_ERROR = 201,
@@ -24,6 +23,7 @@ export enum ErrorCode {
     FIND_RECORD_ERROR = 301,
     PERSIST_RECORD_ERROR = 302,
     RECORD_ALREADY_EXISTS_ERROR = 303,
+    UPDATE_RECORD_ERROR = 304,
 
     // Submission Error
     NULL_RECORD_IN_SUBMISSION_DTO_ERROR = 401,

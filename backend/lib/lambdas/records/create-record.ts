@@ -42,8 +42,7 @@ export class CreateRecordLambda implements LambdaInterface {
                 dto.submissionDetails.timestamp,
                 dto.submissionDetails.timestamp,
                 [],
-                1,
-                );
+            );
             const persistedRecord = await this.recordService.add(tableName, record);
 
             return  {

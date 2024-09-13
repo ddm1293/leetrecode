@@ -18,3 +18,9 @@ export class RecordAlreadyExistsError extends BaseError {
         super('RecordAlreadyExistsError', message, ErrorCode.RECORD_ALREADY_EXISTS_ERROR, originalError);
     }
 }
+
+export class UpdateRecordError extends BaseError {
+    constructor(message: string, originalError?: Error) {
+        super('UpdateRecordError', message, ErrorCode.UPDATE_RECORD_ERROR, originalError);
+    }
+}

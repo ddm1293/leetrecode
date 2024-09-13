@@ -1,5 +1,5 @@
 import { Item } from './common/item.js';
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 import { QuestionRecord } from './question-record.js';
 import { SubmissionDetailDto } from './dto/check-record-dto.js';
 
@@ -10,8 +10,7 @@ export class Submission extends Item {
     @Expose() public userId: string;
     @Expose() public lang: string;
     @Expose() public questionId: string;
-    @Expose() readonly metaData: SubmissionDetailDto;
-    @Expose() public record: QuestionRecord;
+    @Expose() public metaData: SubmissionDetailDto;
     @Expose() public notes: string;
     @Expose() public tags: string[];
 

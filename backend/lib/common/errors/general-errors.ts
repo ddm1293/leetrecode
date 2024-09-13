@@ -30,3 +30,9 @@ export class EmptyTableNameError extends BaseError {
         super('EmptyTableNameError', message, ErrorCode.EMPTY_TABLE_NAME_ERROR, originalError);
     }
 }
+
+export class ParseDTOError extends BaseError {
+    constructor(message: string, originalError?: Error) {
+        super('ParseDTOError', message, ErrorCode.PARSE_DTO_ERROR, originalError);
+    }
+}
