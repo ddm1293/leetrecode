@@ -4,6 +4,8 @@ import { inject, injectable } from 'inversify';
 import { TYPES } from '../common/types.js';
 import { RecordRepository } from '../repositories/record-repository.js';
 import { PersistRecordError, RecordAlreadyExistsError } from '../common/errors/record-errors.js';
+import { getNextReviewDate } from '../algorithms/getNextReviewDate.js';
+import { UpdateRecordDto } from '../models/dto/update-record-dto.js';
 
 export interface RecordService extends Service<QuestionRecord> {}
 
@@ -29,6 +31,7 @@ export class RecordServiceImpl implements RecordService {
     async update(id: string, data: QuestionRecord): Promise<void> {
         throw new Error('Method not implemented.');
     }
+
     async add(tableName: string, record: QuestionRecord): Promise<QuestionRecord> {
         const checkRecord = await this.repository.findRecordByEmail(tableName, record.email, record.questionId);
         if (checkRecord) {
@@ -60,5 +63,10 @@ export class RecordServiceImpl implements RecordService {
             recordExists: checkRecord != null,
             record: checkRecord
         }
+    }
+
+    async updateRecordWithNewSubmission(tableName: string, dto: UpdateRecordDto): Promise<Record<string, any> | undefined> {
+        const nextReviewDate = getNextReviewDate();
+        return await this.repository.updateRecordWithNewSubmission(tableName, dto, nextReviewDate)
     }
 }

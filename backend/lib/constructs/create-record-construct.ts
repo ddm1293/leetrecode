@@ -79,7 +79,7 @@ export class CreateRecordConstruct extends Construct {
                     'record.$': '$.Payload.record',
                     'submissionAdded.$': '$.Payload.submission',
                 },
-                resultPath: '$.AddSubmissionResult',
+                resultPath: '$.addSubmissionResult',
                 outputPath: '$',
             }
         );

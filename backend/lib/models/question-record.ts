@@ -18,7 +18,6 @@ export class QuestionRecord extends Item {
         lastReviewDate: number,
         nextReviewDate: number,
         notes: string[],
-        submissionCount: number,
     ) {
         super();
         this.userId = userId;
@@ -27,7 +26,6 @@ export class QuestionRecord extends Item {
         this.lastReviewDate = lastReviewDate;
         this.nextReviewDate = nextReviewDate;
         this.notes = notes;
-        this.submissionCount = submissionCount;
     }
 
     get pk(): string {

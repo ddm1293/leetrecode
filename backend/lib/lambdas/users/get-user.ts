@@ -5,7 +5,7 @@ import { TYPES } from '../../common/types.js';
 import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from 'aws-lambda';
 import { ErrorHandler } from '../../common/errors/error-handler.js';
 import { ResponseManager } from '../../common/response-manager.js';
-import { EmptyPathParamsError } from '../../common/errors/general-errors.js';
+import { EmptyPathParamsError, EmptyTableNameError } from '../../common/errors/general-errors.js';
 import { container } from '../../common/inversify.config';
 
 @injectable()

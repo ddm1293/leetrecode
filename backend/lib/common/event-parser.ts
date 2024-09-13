@@ -1,4 +1,4 @@
-import { EmptyRequestBodyError, ParseJsonError } from './errors/general-errors.js';
+import { EmptyRequestBodyError, ParseDTOError, ParseJsonError } from './errors/general-errors.js';
 import { ParseUserError } from './errors/user-errors.js';
 import { ItemTransformer } from '../models/common/item-transformer.js';
 import { Item } from '../models/common/item.js';
@@ -6,6 +6,9 @@ import { plainToInstance } from 'class-transformer';
 import { validateOrReject } from 'class-validator';
 
 import { AddSubmissionDto } from '../models/dto/add-submission-dto.js';
+import { UpdateRecordDto } from '../models/dto/update-record-dto.js';
+import { QuestionRecord } from '../models/question-record.js';
+import { Submission } from '../models/submission.js';
 
 export class EventParser {
     public static async parse<T extends Item>(className: new (...args: any[]) => T,
@@ -28,7 +31,7 @@ export class EventParser {
             return await ItemTransformer.deserialize(className, parsedBody);
         } catch (error) {
             if (error instanceof Error) {
-                throw new ParseUserError(
+                throw new ParseDTOError(
                     "Failed to parse incoming event into the target object",
                     error
                 );
@@ -57,12 +60,12 @@ export class EventParser {
             return instance;
         } catch (error) {
             if (error instanceof Error) {
-                throw new ParseUserError(
+                throw new ParseDTOError(
                     "Failed to parse incoming event into the target object",
                     error
                 );
             } else {
-                throw new ParseUserError('Failed to parse incoming event into a DTO object');
+                throw new ParseDTOError('Failed to parse incoming event into a DTO object');
             }
         }
     }
@@ -80,9 +83,9 @@ export class EventParser {
             return dto;
         } catch (error) {
             if (error instanceof Error) {
-                throw new ParseUserError("Failed to parse incoming event into the target object", error);
+                throw new ParseDTOError("Failed to parse incoming event into the target object", error);
             } else {
-                throw new ParseUserError('Failed to parse incoming event into a DTO object');
+                throw new ParseDTOError('Failed to parse incoming event into a DTO object');
             }
         }
     }
@@ -110,9 +113,40 @@ export class EventParser {
             return dto;
         } catch (error) {
             if (error instanceof Error) {
-                throw new ParseUserError("Failed to parse incoming event into the target object", error);
+                throw new ParseDTOError("Failed to parse incoming event into the target object", error);
             } else {
-                throw new ParseUserError('Failed to parse incoming event into a DTO object');
+                throw new ParseDTOError('Failed to parse incoming event into a DTO object');
+            }
+        }
+    }
+
+    public static async parseUpdateRecordDTO(event: unknown): Promise<UpdateRecordDto> {
+        if (!event || typeof event !== 'object') {
+            throw new EmptyRequestBodyError('Request body is empty or the request event is not an object');
+        }
+
+        const eventObj: Record<string, unknown> = event as Record<string, unknown>
+
+        try {
+            const addSubmissionResult = eventObj.addSubmissionResult as AddSubmissionResult
+
+            const transformedObj = {
+                email: addSubmissionResult.record.email,
+                userId: addSubmissionResult.record.userId,
+                questionId: addSubmissionResult.record.questionId,
+                recordLastReviewDate: addSubmissionResult.record.lastReviewDate,
+                submissionDate: addSubmissionResult.submissionAdded.createdAt,
+                notes: addSubmissionResult.submissionAdded.notes,
+            }
+
+            const dto: UpdateRecordDto = plainToInstance(UpdateRecordDto, transformedObj, { excludeExtraneousValues: true });
+            await validateOrReject(dto);
+            return dto;
+        } catch (error) {
+            if (error instanceof Error) {
+                throw new ParseDTOError("Failed to parse incoming event into the target object", error);
+            } else {
+                throw new ParseDTOError('Failed to parse incoming event into a DTO object');
             }
         }
     }
@@ -125,4 +159,9 @@ type CheckRecordResult = {
 
 type CreateRecordResult = {
     recordCreated: Record<string, unknown> | null
+}
+
+type AddSubmissionResult = {
+    record: QuestionRecord;
+    submissionAdded: Submission;
 }
