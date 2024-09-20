@@ -8,7 +8,7 @@
     "48": "logo48.png"
   },
   "action": {
-    "default_popup": "index.html"
+    "default_popup": "src/popup/popup.html"
   },
   "permissions":[
     "scripting"
