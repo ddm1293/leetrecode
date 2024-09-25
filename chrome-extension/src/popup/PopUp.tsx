@@ -1,113 +1,89 @@
-import './PopUp.css'
-import { ThemeProvider, Box, createTheme, Grid2, IconButton, Tooltip, Typography } from '@mui/material';
-import { AiFillSetting } from 'react-icons/ai';
-import { Item } from './components/Item.tsx';
-import { MyPie } from "./components/Pie.tsx";
-import { AcStackBar } from './components/AcStackBar.tsx';
-import { useEffect, useState } from 'react';
-import { User } from '../common/models.ts';
-import { getStoredUser } from '../common/storage.ts';
-
-const theme = createTheme({
-    typography: {
-        fontFamily: "Raleway, sans-serif",
-    },
-});
-
-export const mockUser: User = {
-    email: "testuser@example.com",
-    _id: "user12345",
-    performance: {
-        today_ac_count: 5,
-        today_num_question: 7,
-        avg_memory_percent: 85.3,
-        avg_time_percent: 72.5,
-        finishedEasy: ["easy1", "easy2", "easy3"],
-        finishedMedium: ["medium1", "medium2"],
-        finishedHard: ["hard1"]
-    }
-};
+import React from 'react';
+import {
+    Box,
+    Flex,
+    Grid,
+    GridItem,
+    Heading,
+    IconButton,
+    LinkBox,
+    LinkOverlay, Tab,
+    TabList, TabPanel, TabPanels,
+    Tabs,
+    Tooltip,
+} from '@chakra-ui/react';
+import { IoSettings } from "react-icons/io5";
 
 function PopUp() {
-    const [user, setUser] = useState<User | null>(null);
-
-    useEffect(() => {
-        getStoredUser().then((user) => {
-            console.log("popup user");
-            console.log(user);
-            setUser(user);
-        }).catch(() => {
-            setUser(mockUser);  // Use mock data if fetching fails
-        });
-    }, []);
-
-
-    if (!user) {
-        return (
-            <Typography variant="h6" align="center">
-                Loading data...
-            </Typography>
-        );
-    }
-
     return (
-      <ThemeProvider theme={theme}>
-          <div>
-            <div>
-              <Box
-                  sx={{
-                    bgcolor: "orange",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-around",
-                    py: 0.5,
-                  }}
-              >
-                <Box
-                    sx={{
-                      fontStyle: "italic",
-                      fontFamily: "Raleway",
-                      typography: "h5",
-                      display: "inline",
-                    }}
+        <Flex
+            flexDirection='column'
+            bg='pink'
+            h='100vh'
+            w='100vw'
+            justify="center"
+            align="center"
+        >
+            <Grid
+                templateColumns='repeat(5, 1fr)'
+                gap={4}
+                w='100%'
+                alignItems='center'
+            >
+                <GridItem colStart={1} colEnd={2}>
+                    <LinkBox>
+                        <Heading
+                            as='h4'
+                            size='md'
+                            p={4}
+                            color='white'
+                            textAlign='left'
+                        >
+                            <LinkOverlay href='http://localhost:3000/'  _hover={{ color: 'pink.300' }}>
+                                LeetReCode
+                            </LinkOverlay>
+                        </Heading>
+                    </LinkBox>
+                </GridItem>
+                <GridItem colStart={5} colEnd={5}>
+                    <IconButton
+                        p={-2}
+                        variant='ghost'
+                        color='white'
+                        _hover={{ color: 'pink.300' }}
+                        aria-label='Settings'
+                        size='lg'
+                        icon={<IoSettings />}
+                    />
+                </GridItem>
+            </Grid>
+
+            <Box w='95%' pb='6'>
+                <Tabs
+                    size='sm'
+                    colorScheme='pink'
+                    isFitted
                 >
-                  LeetReCode
-                </Box>
-                <Tooltip title="Options">
-                  <IconButton onClick={() => chrome.runtime.openOptionsPage()}>
-                    <AiFillSetting size={25} />
-                  </IconButton>
-                </Tooltip>
-              </Box>
-              <Typography variant="subtitle1">Today's Stats:</Typography>
-              <Grid2 container direction="column">
-                <Item
-                    label={"AC Rate"}
-                    value={(
-                        Math.round(
-                            (user.performance.today_ac_count /
-                                user.performance.today_num_question) *
-                            100
-                        ) / 100
-                    ).toFixed(2)}
-                />
-                <Item
-                    label={"Avg Runtime"}
-                    value={`${Math.round(user.performance.avg_time_percent)} ms`}
-                />
-                <MyPie
-                    easy={user.performance.finishedEasy.length}
-                    medium={user.performance.finishedMedium.length}
-                    hard={user.performance.finishedHard.length}
-                />
-                <AcStackBar
-                    total={user.performance.today_num_question}
-                    ac_count={user.performance.today_ac_count}
-                />
-              </Grid2>
-            </div>
-          </div>
-      </ThemeProvider>
+                    <TabList>
+                        <Tab>
+                            Today's AC
+                        </Tab>
+                        <Tab>
+                            Today's Review
+                        </Tab>
+                    </TabList>
+
+                    <TabPanels>
+                        <TabPanel>
+                            AC
+                        </TabPanel>
+                        <TabPanel>
+                            Review
+                        </TabPanel>
+                    </TabPanels>
+                </Tabs>
+            </Box>
+        </Flex>
     )
 }
 
