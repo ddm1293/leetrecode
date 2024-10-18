@@ -8,10 +8,18 @@
     "48": "logo48.png"
   },
   "action": {
-    "default_popup": "src/popup/popup.html"
+    "default_popup": "src/popup/popup.html",
+    "default_title": "LeetReCode"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
   },
   "permissions":[
-    "scripting"
+    "scripting",
+    "webRequest",
+    "storage",
+    "tabs"
   ],
   "host_permissions": [
     "<all_urls>"

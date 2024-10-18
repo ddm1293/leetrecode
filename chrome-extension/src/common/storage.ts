@@ -1,18 +1,30 @@
-import { SyncStorage, User } from './models.ts';
+interface User {
+    email: string
+}
 
-export const getStoredUser = (): Promise<User> => {
-    return new Promise((resolve, reject) => {
-        chrome.storage.sync.get(["user"], (items) => {
+export const setUser = (user: User) => {
+    return new Promise<void>((resolve, reject) => {
+        chrome.storage.sync.set({ user }, () => {
             if (chrome.runtime.lastError) {
                 reject(chrome.runtime.lastError.message);
             } else {
-                const res = items as Partial<SyncStorage>;
-                if (res.user) {
-                    resolve(res.user);
-                } else {
-                    reject('User data not found.')
-                }
+                resolve();
             }
-        });
-    });
-};
+        })
+    })
+}
+
+export const getUser = () => {
+    return new Promise<User>((resolve, reject) => {
+        chrome.storage.sync.get(["user"], (res) => {
+            if (chrome.runtime.lastError) {
+                reject(chrome.runtime.lastError.message);
+            } else if (!res.user) {
+                reject(new Error("User not found in storage."));
+            } else {
+                console.log("User retrieved from storage:", res.user);
+                resolve(res.user);
+            }
+        })
+    })
+}
